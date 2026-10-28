@@ -1,0 +1,158 @@
+======================================================================
+                 VSAM INTEGRATION DESIGN
+======================================================================
+
+PROJECT       : HIGH-VOLUME BATCH TRANSACTION PROCESSING
+FILE ROLE     : INDEXED ACCOUNT MASTER / CONTROL DATA
+
+----------------------------------------------------------------------
+VSAM ARCHITECTURE
+----------------------------------------------------------------------
+
+LOGICAL FILE TYPE : VSAM KSDS (Key-Sequenced Data Set)
+LOCAL IMPLEMENTATION : Keyed account master file
+
+The VSAM layer provides fast keyed access to account master records
+used during high-volume batch transaction processing.
+
+----------------------------------------------------------------------
+ACCOUNT MASTER RECORD
+----------------------------------------------------------------------
+
+KEY              : ACCOUNT ID
+
+ACCOUNT ID       : 100001 - 100005
+CUSTOMER NAME    : Account holder name
+ACCOUNT TYPE     : SAVINGS / CURRENT
+BALANCE          : Current account balance
+STATUS           : ACTIVE / INACTIVE
+
+----------------------------------------------------------------------
+KEYED ACCESS
+----------------------------------------------------------------------
+
+The ACCOUNT ID acts as the primary logical key.
+
+Example:
+
+ACCOUNT ID 100003
+        |
+        v
+Account Master Record
+        |
+        +-- Customer : Kabir Mehta
+        +-- Type     : CURRENT
+        +-- Balance  : 95000.00
+        +-- Status   : ACTIVE
+
+----------------------------------------------------------------------
+BATCH PROCESSING ROLE
+----------------------------------------------------------------------
+
+Transaction Input
+       |
+       v
+COBOL Processor
+       |
+       v
+Read Account by Key
+       |
+       v
+Validate Transaction
+       |
+   +---+---+
+   |       |
+ VALID   INVALID
+   |       |
+   v       v
+Update   Exception
+Account  Record
+   |
+   v
+Write Updated Account
+
+----------------------------------------------------------------------
+LOCAL ACCOUNT MASTER
+----------------------------------------------------------------------
+
+FILE:
+data/accounts.dat
+
+FORMAT:
+
+ACCOUNT_ID|CUSTOMER_NAME|ACCOUNT_TYPE|BALANCE|STATUS
+
+Example:
+
+100001|Aarav Sharma|SAVINGS|50000.00|ACTIVE
+
+----------------------------------------------------------------------
+VSAM OPERATIONS REPRESENTED
+----------------------------------------------------------------------
+
+1. Key-based account lookup
+2. Sequential account loading
+3. Account record update
+4. Account master replacement
+5. Account status validation
+6. Balance retrieval
+7. Balance update
+
+----------------------------------------------------------------------
+COBOL INTEGRATION
+----------------------------------------------------------------------
+
+The TRANPROC COBOL program loads account master records into an
+in-memory indexed table.
+
+The account ID is used to locate the corresponding account record.
+
+During processing:
+
+CREDIT
+    Current Balance + Transaction Amount
+
+DEBIT
+    Current Balance - Transaction Amount
+
+A debit is rejected when the requested amount exceeds the available
+balance.
+
+----------------------------------------------------------------------
+FINAL ACCOUNT MASTER
+----------------------------------------------------------------------
+
+After successful batch processing:
+
+100001|Aarav Sharma|SAVINGS|57500.00|ACTIVE
+100002|Riya Patel|SAVINGS|78500.00|ACTIVE
+100003|Kabir Mehta|CURRENT|95000.00|ACTIVE
+100004|Ananya Shah|SAVINGS|33000.00|ACTIVE
+100005|Vikram Joshi|CURRENT|105000.00|ACTIVE
+
+----------------------------------------------------------------------
+PRODUCTION MAINFRAME MAPPING
+----------------------------------------------------------------------
+
+LOCAL LINUX                    MAINFRAME
+-----------                    ---------
+accounts.dat             ->    VSAM KSDS
+TRANPROC.cbl             ->    COBOL batch program
+run_batch.sh             ->    JCL job execution
+PostgreSQL               ->    DB2 subsystem
+reports/*.txt            ->    Sequential report datasets
+
+----------------------------------------------------------------------
+DESIGN BENEFIT
+----------------------------------------------------------------------
+
+VSAM provides an indexed master-data model suitable for frequent
+account retrieval and controlled record updates during batch
+processing.
+
+The local keyed-file implementation demonstrates the same logical
+role while allowing development and testing on Linux.
+
+======================================================================
+                    END OF VSAM DESIGN
+======================================================================

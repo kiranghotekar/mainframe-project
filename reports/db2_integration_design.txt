@@ -1,0 +1,145 @@
+======================================================================
+                 DB2 INTEGRATION DESIGN
+======================================================================
+
+PROJECT       : HIGH-VOLUME BATCH TRANSACTION PROCESSING
+DATABASE ROLE : ACCOUNT AND TRANSACTION MANAGEMENT
+
+----------------------------------------------------------------------
+DATABASE ARCHITECTURE
+----------------------------------------------------------------------
+
+The batch processing system uses a relational database layer for
+persistent storage of customer/account information and transaction
+records.
+
+LOGICAL DATABASE TECHNOLOGY : IBM DB2
+LOCAL IMPLEMENTATION         : PostgreSQL 18.4
+DATABASE NAME                : batch_transaction_db
+
+PostgreSQL is used as the local development substitute because a
+native z/OS DB2 subsystem is not available in the Linux environment.
+
+----------------------------------------------------------------------
+RELATIONAL TABLES
+----------------------------------------------------------------------
+
+CUSTOMERS
+---------
+customer_id       : Primary Key
+customer_name     : Customer name
+account_type      : SAVINGS / CURRENT
+opening_balance   : Initial account balance
+status            : Account status
+
+TRANSACTIONS
+------------
+transaction_id    : Primary Key
+customer_id       : Foreign Key
+transaction_type  : CREDIT / DEBIT
+amount            : Transaction amount
+description       : Transaction description
+status            : SUCCESS / FAILED
+
+----------------------------------------------------------------------
+RELATIONSHIP
+----------------------------------------------------------------------
+
+CUSTOMERS
+   |
+   | 1
+   |
+   | N
+   v
+TRANSACTIONS
+
+One customer/account can have multiple transactions.
+
+----------------------------------------------------------------------
+DBMS FEATURES IMPLEMENTED
+----------------------------------------------------------------------
+
+1. Primary keys
+2. Foreign keys
+3. Referential integrity
+4. Numeric monetary fields
+5. Aggregate SQL queries
+6. GROUP BY processing
+7. Conditional CASE expressions
+8. Database views
+9. Transaction status filtering
+10. Indexing
+11. Relational joins
+
+----------------------------------------------------------------------
+INDEXES
+----------------------------------------------------------------------
+
+idx_transactions_customer
+    Used for efficient customer-based transaction lookup.
+
+idx_transactions_status
+    Used for efficient SUCCESS / FAILED transaction filtering.
+
+----------------------------------------------------------------------
+ACCOUNT BALANCE VIEW
+----------------------------------------------------------------------
+
+VIEW NAME:
+account_balance_summary
+
+Purpose:
+Calculates account balances from the opening balance and successful
+transactions.
+
+Formula:
+
+CURRENT BALANCE
+=
+OPENING BALANCE
++ SUCCESSFUL CREDITS
+- SUCCESSFUL DEBITS
+
+The rejected transaction TXN0008 is excluded from balance calculation.
+
+----------------------------------------------------------------------
+BATCH DATABASE FLOW
+----------------------------------------------------------------------
+
+Input Transaction Dataset
+          |
+          v
+     COBOL Processor
+          |
+          v
+    Validation Logic
+          |
+          +----------------------+
+          |                      |
+          v                      v
+       SUCCESS                FAILURE
+          |                      |
+          v                      v
+    Transaction DB          Exception Record
+          |
+          v
+     Account Balance
+          |
+          v
+        Reports
+
+----------------------------------------------------------------------
+LOCAL IMPLEMENTATION NOTE
+----------------------------------------------------------------------
+
+The production architecture is designed around IBM DB2 on z/OS.
+
+For local Linux development and demonstration, PostgreSQL 18.4
+implements the relational database functionality.
+
+The SQL structures and relational concepts are directly applicable
+to the DB2 database layer of the mainframe solution.
+
+======================================================================
+                     END OF DB2 DESIGN
+======================================================================

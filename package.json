@@ -1,0 +1,32 @@
+{
+  "name": "ibm-mainframe-batch-banking-system",
+  "version": "1.0.0",
+  "description": "High-Volume Batch Transaction Processing & Banking Operations System with IBM Mainframe COBOL & JCL Engine",
+  "main": "server/index.js",
+  "type": "module",
+  "scripts": {
+    "server": "node server/index.js",
+    "client": "npm run dev --prefix client",
+    "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,cyan\" \"node server/index.js\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client"
+  },
+  "keywords": [
+    "ibm",
+    "mainframe",
+    "cobol",
+    "jcl",
+    "vsam",
+    "db2",
+    "banking"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "gitignore": "^0.7.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  }
+}

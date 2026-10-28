@@ -1,0 +1,20 @@
+//BATCHJOB JOB (ACCT),'BATCH TRANSACTION',CLASS=A,MSGCLASS=X
+//* ------------------------------------------------------------
+//* HIGH-VOLUME BATCH TRANSACTION PROCESSING
+//* JCL -> COBOL PROCESSOR -> OUTPUT DATASETS
+//* ------------------------------------------------------------
+//STEP01   EXEC PGM=TRANPROC
+//STEPLIB  DD DSN=USER.LOADLIB,DISP=SHR
+//SYSOUT   DD SYSOUT=*
+//SYSUDUMP DD SYSOUT=*
+//TRANIN   DD DSN=USER.TRANSACTIONS.INPUT,DISP=SHR
+//ACCTIN   DD DSN=USER.ACCOUNTS.MASTER,DISP=SHR
+//PROCED   DD DSN=USER.TRANSACTIONS.PROCESSED,DISP=(NEW,CATLG,DELETE),
+//            SPACE=(TRK,(5,5)),UNIT=SYSDA
+//EXCEPT   DD DSN=USER.TRANSACTIONS.EXCEPT,DISP=(NEW,CATLG,DELETE),
+//            SPACE=(TRK,(5,5)),UNIT=SYSDA
+//ACCTOUT  DD DSN=USER.ACCOUNTS.UPDATED,DISP=(NEW,CATLG,DELETE),
+//            SPACE=(TRK,(5,5)),UNIT=SYSDA
+//* ------------------------------------------------------------
+//* END OF BATCH JOB
+//* ------------------------------------------------------------
