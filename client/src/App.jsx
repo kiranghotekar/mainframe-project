@@ -114,6 +114,31 @@ export default function App() {
     }
   };
 
+  // Generate 10k enterprise dataset
+  const handleGenerate10k = async () => {
+    if (!window.confirm('Generate enterprise 10,000-row transaction dataset (500 accounts, 10,000 transactions)? Staged batch will be ready for execution.')) {
+      return;
+    }
+    setIsProcessing(true);
+    showToast('Provisioning 10,000 transactions across 500 accounts...', 'info');
+    try {
+      const res = await fetch('/api/batch/generate-10k', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ transactions: 10000, accounts: 500 })
+      });
+      const data = await res.json();
+      await fetchData();
+      setBatchResult(null);
+      showToast(`Loaded ${data.transactionsCount} transactions across ${data.accountsCount} customer accounts!`, 'success');
+    } catch (err) {
+      console.error(err);
+      showToast('Dataset generation failed: ' + err.message, 'error');
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
   // Stage Transaction
   const handleStageTransaction = async (txnData) => {
     try {
@@ -220,6 +245,7 @@ export default function App() {
         telemetry={telemetry}
         onRunBatch={handleRunBatch}
         onReset={handleReset}
+        onGenerate10k={handleGenerate10k}
         onOpenTxnModal={() => {
           setQuickTxnConfig({ accountId: accounts[0]?.id || '100001', type: 'CREDIT' });
           setIsTxnModalOpen(true);

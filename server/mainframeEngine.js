@@ -221,11 +221,13 @@ export function executeMainframeBatch() {
 
   // Load account master
   const rawAccounts = getAccounts();
-  // Deep copy in-memory table
+  // Deep copy in-memory table and build O(1) indexed Map
   const accountTable = rawAccounts.map(a => ({ ...a, openingBalance: a.balance }));
+  const accountMap = new Map(accountTable.map(a => [a.id, a]));
   log(`[COBOL RUNTIME] ACCOUNT MASTER LOADED: ${accountTable.length} ACCOUNTS`);
 
   const transactions = getTransactions();
+  const isLargeBatch = transactions.length > 200;
   let txnProcessedCount = 0;
   let successCount = 0;
   let errorCount = 0;
@@ -239,14 +241,21 @@ export function executeMainframeBatch() {
 
   for (const txn of transactions) {
     txnProcessedCount++;
-    log(`[COBOL RUNTIME] Processing: ${txn.id}  Account: ${txn.accountId}  Type: ${txn.type}  Amount: ${txn.amount.toFixed(2)}`);
+
+    const shouldLogDetail = !isLargeBatch || (txnProcessedCount <= 30 || txnProcessedCount > transactions.length - 20);
+
+    if (shouldLogDetail) {
+      log(`[COBOL RUNTIME] Processing: ${txn.id}  Account: ${txn.accountId}  Type: ${txn.type}  Amount: ${txn.amount.toFixed(2)}`);
+    } else if (isLargeBatch && txnProcessedCount % 1000 === 0) {
+      log(`[COBOL RUNTIME] >>> CHECKPOINT: ${txnProcessedCount.toLocaleString()} / ${transactions.length.toLocaleString()} TRANSACTIONS PROCESSED (SYNCPOINT COMMIT) <<<`);
+    }
 
     if (!txn.amount || txn.amount <= 0) {
       errorCount++;
       const paddedAmt = String(Math.round(txn.amount * 100)).padStart(12, '0');
       const errLine = `${txn.id.padEnd(10)}|${txn.accountId.padEnd(10)}|${txn.type.padEnd(10)}|${paddedAmt}|INVALID AMOUNT`;
       exceptionRecords.push(errLine);
-      stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'INVALID AMOUNT' });
+      if (stepTraces.length < 250) stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'INVALID AMOUNT' });
       continue;
     }
 
@@ -255,55 +264,63 @@ export function executeMainframeBatch() {
       const paddedAmt = String(Math.round(txn.amount * 100)).padStart(12, '0');
       const errLine = `${txn.id.padEnd(10)}|${txn.accountId.padEnd(10)}|${txn.type.padEnd(10)}|${paddedAmt}|INVALID TYPE`;
       exceptionRecords.push(errLine);
-      stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'INVALID TYPE' });
+      if (stepTraces.length < 250) stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'INVALID TYPE' });
       continue;
     }
 
-    const acc = accountTable.find(a => a.id === txn.accountId);
+    const acc = accountMap.get(txn.accountId);
     if (!acc) {
       errorCount++;
       const paddedAmt = String(Math.round(txn.amount * 100)).padStart(12, '0');
       const errLine = `${txn.id.padEnd(10)}|${txn.accountId.padEnd(10)}|${txn.type.padEnd(10)}|${paddedAmt}|ACCOUNT NOT FOUND`;
       exceptionRecords.push(errLine);
-      stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'ACCOUNT NOT FOUND' });
+      if (stepTraces.length < 250) stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'ACCOUNT NOT FOUND' });
       continue;
     }
 
     const balanceBefore = acc.balance;
-    log(`[COBOL RUNTIME] ACCOUNT FOUND: ${acc.id} BALANCE BEFORE: ${balanceBefore.toFixed(2)}`);
+    if (shouldLogDetail) {
+      log(`[COBOL RUNTIME] ACCOUNT FOUND: ${acc.id} BALANCE BEFORE: ${balanceBefore.toFixed(2)}`);
+    }
 
     if (txn.type === 'CREDIT') {
       acc.balance += txn.amount;
       totalCredit += txn.amount;
       successCount++;
-      log(`[COBOL RUNTIME] BALANCE AFTER CREDIT: ${acc.balance.toFixed(2)}`);
+      if (shouldLogDetail) {
+        log(`[COBOL RUNTIME] BALANCE AFTER CREDIT: ${acc.balance.toFixed(2)}`);
+      }
 
       const paddedAmt = String(Math.round(txn.amount * 100)).padStart(12, '0');
       const procLine = `${txn.id.padEnd(10)}|${txn.accountId.padEnd(10)}|${txn.type.padEnd(10)}|${paddedAmt}|SUCCESS`;
       processedRecords.push(procLine);
-      stepTraces.push({ txnId: txn.id, status: 'SUCCESS', type: 'CREDIT', amount: txn.amount, balanceAfter: acc.balance });
+      if (stepTraces.length < 250) stepTraces.push({ txnId: txn.id, status: 'SUCCESS', type: 'CREDIT', amount: txn.amount, balanceAfter: acc.balance });
     } else {
       // DEBIT
       if (acc.balance >= txn.amount) {
         acc.balance -= txn.amount;
         totalSuccessfulDebit += txn.amount;
         successCount++;
-        log(`[COBOL RUNTIME] BALANCE AFTER DEBIT: ${acc.balance.toFixed(2)}`);
+        if (shouldLogDetail) {
+          log(`[COBOL RUNTIME] BALANCE AFTER DEBIT: ${acc.balance.toFixed(2)}`);
+        }
 
         const paddedAmt = String(Math.round(txn.amount * 100)).padStart(12, '0');
         const procLine = `${txn.id.padEnd(10)}|${txn.accountId.padEnd(10)}|${txn.type.padEnd(10)}|${paddedAmt}|SUCCESS`;
         processedRecords.push(procLine);
-        stepTraces.push({ txnId: txn.id, status: 'SUCCESS', type: 'DEBIT', amount: txn.amount, balanceAfter: acc.balance });
+        if (stepTraces.length < 250) stepTraces.push({ txnId: txn.id, status: 'SUCCESS', type: 'DEBIT', amount: txn.amount, balanceAfter: acc.balance });
       } else {
         // Insufficient funds
         errorCount++;
         totalRejectedDebit += txn.amount;
-        log(`[COBOL RUNTIME] INSUFFICIENT BALANCE FOR DEBIT: Requested ${txn.amount.toFixed(2)}, Available ${acc.balance.toFixed(2)}`);
+        if (shouldLogDetail) {
+          log(`[COBOL RUNTIME] INSUFFICIENT BALANCE FOR DEBIT: Requested ${txn.amount.toFixed(2)}, Available ${acc.balance.toFixed(2)}`);
+        }
 
         const paddedAmt = String(Math.round(txn.amount * 100)).padStart(12, '0');
         const errLine = `${txn.id.padEnd(10)}|${txn.accountId.padEnd(10)}|${txn.type.padEnd(10)}|${paddedAmt}|INSUFFICIENT BALANCE`;
         exceptionRecords.push(errLine);
-        stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'INSUFFICIENT BALANCE', requested: txn.amount, available: acc.balance });
+        if (stepTraces.length < 250) stepTraces.push({ txnId: txn.id, status: 'EXCEPTION', reason: 'INSUFFICIENT BALANCE', requested: txn.amount, available: acc.balance });
       }
     }
   }

@@ -1,9 +1,16 @@
-import React, { useState } from 'react';
-import { Database, Search, HardDrive } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Database, Search, HardDrive, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
 
 export default function DatabaseView({ accounts, transactions, processed, exceptions }) {
   const [activeDataset, setActiveDataset] = useState('accounts');
   const [searchTerm, setSearchTerm] = useState('');
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(50);
+
+  // Reset page when dataset or search term changes
+  useEffect(() => {
+    setPage(1);
+  }, [activeDataset, searchTerm, pageSize]);
 
   const datasets = {
     accounts: { label: 'ACCT.MASTER.VSAM (KSDS)', data: accounts, desc: 'Indexed Key-Sequenced Dataset (Primary Key: 6-char Account ID)' },
@@ -16,6 +23,12 @@ export default function DatabaseView({ accounts, transactions, processed, except
   const filteredData = searchTerm
     ? currentData.filter(row => JSON.stringify(row).toLowerCase().includes(searchTerm.toLowerCase()))
     : currentData;
+
+  const totalPages = pageSize === 'ALL' ? 1 : Math.max(1, Math.ceil(filteredData.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const startIndex = pageSize === 'ALL' ? 0 : (currentPage - 1) * pageSize;
+  const endIndex = pageSize === 'ALL' ? filteredData.length : Math.min(startIndex + pageSize, filteredData.length);
+  const pageData = filteredData.slice(startIndex, endIndex);
 
   const columns = filteredData.length > 0 ? Object.keys(filteredData[0]) : [];
 
@@ -135,17 +148,17 @@ export default function DatabaseView({ accounts, transactions, processed, except
             <table className="data-table">
               <thead>
                 <tr>
-                  <th style={{ width: '40px' }}>#</th>
+                  <th style={{ width: '50px' }}>#</th>
                   {columns.map(col => (
                     <th key={col}>{col.replace(/([A-Z])/g, ' $1').toUpperCase()}</th>
                   ))}
                 </tr>
               </thead>
               <tbody>
-                {filteredData.map((row, idx) => (
-                  <tr key={idx}>
+                {pageData.map((row, idx) => (
+                  <tr key={startIndex + idx}>
                     <td style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
-                      {String(idx + 1).padStart(3, '0')}
+                      {String(startIndex + idx + 1).padStart(5, '0')}
                     </td>
                     {columns.map(col => (
                       <td key={col} style={{ fontFamily: 'var(--font-mono)' }}>
@@ -160,9 +173,97 @@ export default function DatabaseView({ accounts, transactions, processed, except
         )}
       </div>
 
-      <div style={{ marginTop: '8px', fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', display: 'flex', justifyContent: 'space-between' }}>
-        <span>CATALOG: {datasets[activeDataset]?.label} | LRECL=80 BLKSIZE=3120 RECFM=FB</span>
-        <span>SHOWING {filteredData.length} OF {currentData.length} RECORDS</span>
+      {/* Pagination Bar */}
+      <div style={{
+        marginTop: '10px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '12px',
+        fontSize: '11px',
+        fontFamily: 'var(--font-mono)'
+      }}>
+        <div style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+          <span>CATALOG: {datasets[activeDataset]?.label} | LRECL=80 BLKSIZE=3120 RECFM=FB</span>
+          <span style={{ marginLeft: '12px' }}>
+            RECORDS {filteredData.length > 0 ? startIndex + 1 : 0}-{endIndex} OF {filteredData.length}
+          </span>
+        </div>
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>ROWS/PAGE:</span>
+            <select
+              value={pageSize}
+              onChange={(e) => setPageSize(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))}
+              style={{
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border-subtle)',
+                color: 'var(--text-primary)',
+                fontFamily: 'var(--font-mono)',
+                fontSize: '10px',
+                padding: '3px 6px',
+                borderRadius: 'var(--radius-sm)'
+              }}
+            >
+              <option value={25}>25</option>
+              <option value={50}>50</option>
+              <option value={100}>100</option>
+              <option value={250}>250</option>
+              <option value={500}>500</option>
+              <option value="ALL">ALL</option>
+            </select>
+          </div>
+
+          {pageSize !== 'ALL' && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <button
+                className="btn btn-secondary"
+                disabled={currentPage <= 1}
+                onClick={() => setPage(1)}
+                title="First Page"
+                style={{ padding: '4px 6px', fontSize: '10px' }}
+              >
+                <ChevronsLeft size={12} />
+              </button>
+              <button
+                className="btn btn-secondary"
+                disabled={currentPage <= 1}
+                onClick={() => setPage(p => Math.max(1, p - 1))}
+                title="Previous Page"
+                style={{ padding: '4px 8px', fontSize: '10px' }}
+              >
+                <ChevronLeft size={12} />
+                <span>PREV</span>
+              </button>
+
+              <span style={{ padding: '0 6px', color: 'var(--matrix-green)', fontWeight: 700, fontSize: '10px' }}>
+                PAGE {currentPage} / {totalPages}
+              </span>
+
+              <button
+                className="btn btn-secondary"
+                disabled={currentPage >= totalPages}
+                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                title="Next Page"
+                style={{ padding: '4px 8px', fontSize: '10px' }}
+              >
+                <span>NEXT</span>
+                <ChevronRight size={12} />
+              </button>
+              <button
+                className="btn btn-secondary"
+                disabled={currentPage >= totalPages}
+                onClick={() => setPage(totalPages)}
+                title="Last Page"
+                style={{ padding: '4px 6px', fontSize: '10px' }}
+              >
+                <ChevronsRight size={12} />
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
     </div>

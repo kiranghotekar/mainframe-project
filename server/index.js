@@ -13,6 +13,7 @@ import {
   getMainframeCode,
   updateMainframeCode
 } from './mainframeEngine.js';
+import { generateLargeDataset } from './generateDataset.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -134,6 +135,22 @@ app.post('/api/batch/reset', (req, res) => {
   try {
     const result = resetToBaseline();
     res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Generate Enterprise 10,000 Row Dataset
+app.post('/api/batch/generate-10k', (req, res) => {
+  try {
+    const numTxns = req.body.transactions || 10000;
+    const numAccs = req.body.accounts || 500;
+    const result = generateLargeDataset(numTxns, numAccs);
+    res.json({
+      success: true,
+      message: `Successfully provisioned ${result.transactionsCount} transactions across ${result.accountsCount} customer accounts.`,
+      ...result
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

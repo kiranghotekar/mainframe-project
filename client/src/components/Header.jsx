@@ -1,10 +1,11 @@
 import React from 'react';
-import { Play, RotateCcw, PlusCircle, UserPlus, Cpu, Server, Activity, Sun, Moon } from 'lucide-react';
+import { Play, RotateCcw, PlusCircle, UserPlus, Cpu, Server, Activity, Sun, Moon, Database } from 'lucide-react';
 
 export default function Header({ 
   telemetry, 
   onRunBatch, 
   onReset, 
+  onGenerate10k,
   onOpenTxnModal, 
   onOpenAccModal, 
   isProcessing,
@@ -126,6 +127,17 @@ export default function Header({
           >
             <PlusCircle size={14} />
             <span>+ Stage TXN</span>
+          </button>
+
+          <button 
+            className="btn btn-secondary"
+            onClick={onGenerate10k}
+            disabled={isProcessing}
+            title="Provision high-volume enterprise dataset (500 Accounts, 10,000 Transactions)"
+            style={{ borderColor: 'var(--matrix-green-border)', color: 'var(--matrix-green)' }}
+          >
+            <Database size={13} color="var(--matrix-green)" />
+            <span>10K DATASET</span>
           </button>
 
           <button 

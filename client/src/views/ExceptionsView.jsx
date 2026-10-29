@@ -1,7 +1,14 @@
-import React from 'react';
-import { AlertTriangle, RefreshCw, ShieldCheck, XCircle } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { AlertTriangle, RefreshCw, ShieldCheck, XCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function ExceptionsView({ exceptions, accounts, onFundAndRetry }) {
+  const [page, setPage] = useState(1);
+  const pageSize = 20;
+
+  const accountMap = useMemo(() => {
+    return new Map(accounts.map(a => [a.id, a]));
+  }, [accounts]);
+
   const formatCurrency = (val) => {
     return '₹' + Number(val || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
@@ -35,6 +42,10 @@ export default function ExceptionsView({ exceptions, accounts, onFundAndRetry })
     );
   }
 
+  const totalPages = Math.max(1, Math.ceil(exceptions.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const displayedExceptions = exceptions.slice((currentPage - 1) * pageSize, currentPage * pageSize);
+
   return (
     <div style={{ padding: '0 24px 24px' }}>
       
@@ -53,8 +64,8 @@ export default function ExceptionsView({ exceptions, accounts, onFundAndRetry })
 
       {/* Exception Items */}
       <div style={{ display: 'grid', gap: '8px' }}>
-        {exceptions.map((exc, idx) => {
-          const account = accounts.find(a => a.id === exc.accountId);
+        {displayedExceptions.map((exc, idx) => {
+          const account = accountMap.get(exc.accountId);
           const currentBal = account ? account.balance : 0;
           const deficit = exc.type === 'DEBIT' && account ? (Number(exc.amount) - currentBal) : 0;
 
@@ -136,6 +147,48 @@ export default function ExceptionsView({ exceptions, accounts, onFundAndRetry })
           );
         })}
       </div>
+
+      {/* Pagination Controls for Exceptions */}
+      {totalPages > 1 && (
+        <div style={{
+          marginTop: '16px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '11px'
+        }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+            SHOWING EXCEPTIONS {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, exceptions.length)} OF {exceptions.length}
+          </span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage <= 1}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              style={{ padding: '6px 12px', fontSize: '10px' }}
+            >
+              <ChevronLeft size={12} />
+              <span>PREV PAGE</span>
+            </button>
+            <span style={{ color: 'var(--crimson-danger)', fontWeight: 700, fontSize: '11px', padding: '0 8px' }}>
+              PAGE {currentPage} OF {totalPages}
+            </span>
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              style={{ padding: '6px 12px', fontSize: '10px' }}
+            >
+              <span>NEXT PAGE</span>
+              <ChevronRight size={12} />
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

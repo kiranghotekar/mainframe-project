@@ -84,13 +84,13 @@
            PIC X(30).
 
        01  WS-TRANSACTION-COUNT
-           PIC 9(5) VALUE 0.
+           PIC 9(7) VALUE 0.
 
        01  WS-SUCCESS-COUNT
-           PIC 9(5) VALUE 0.
+           PIC 9(7) VALUE 0.
 
        01  WS-ERROR-COUNT
-           PIC 9(5) VALUE 0.
+           PIC 9(7) VALUE 0.
 
        01  WS-TOTAL-CREDIT
            PIC 9(12)V99 VALUE 0.
@@ -105,7 +105,7 @@
            PIC Z(9)9.99.
 
        01  WS-ACCOUNT-INDEX
-           PIC 9(2) VALUE 0.
+           PIC 9(6) VALUE 0.
 
        01  WS-ACCOUNT-FOUND
            PIC X VALUE "N".
@@ -114,10 +114,10 @@
               VALUE "Y".
 
        01  WS-FOUND-INDEX
-           PIC 9(2) VALUE 0.
+           PIC 9(6) VALUE 0.
 
        01  WS-ACCOUNT-COUNT
-           PIC 9(3) VALUE 0.
+           PIC 9(6) VALUE 0.
 
        *> Temporary fields used while loading the account master.
        01  WS-INPUT-ACCOUNT-ID
@@ -140,7 +140,7 @@
 
        01  ACCOUNT-TABLE.
 
-           05 ACCOUNT-ENTRY OCCURS 100 TIMES.
+           05 ACCOUNT-ENTRY OCCURS 5000 TIMES.
 
                10 TABLE-ACCOUNT-ID
                    PIC X(10).

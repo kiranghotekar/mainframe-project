@@ -1,14 +1,48 @@
-import React, { useState } from 'react';
-import { CreditCard, TrendingUp, ArrowUpRight, ArrowDownLeft, Layers, Play, Search } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { CreditCard, TrendingUp, ArrowUpRight, ArrowDownLeft, Layers, Play, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function BankingView({ accounts, transactions, processed, exceptions, onQuickTxn, onRunBatch, isProcessing }) {
   const [filterQuery, setFilterQuery] = useState('');
+  const [page, setPage] = useState(1);
+  const pageSize = 24;
+
+  useEffect(() => {
+    setPage(1);
+  }, [filterQuery]);
 
   const totalBalance = accounts.reduce((sum, a) => sum + (Number(a.balance) || 0), 0);
   const avgBalance = accounts.length ? (totalBalance / accounts.length) : 0;
 
   const pendingCredits = transactions.filter(t => t.type === 'CREDIT').reduce((s, t) => s + (Number(t.amount) || 0), 0);
   const pendingDebits = transactions.filter(t => t.type === 'DEBIT').reduce((s, t) => s + (Number(t.amount) || 0), 0);
+
+  // Pre-aggregate counts using Hash Maps to avoid O(N * M) performance drops with 10k rows
+  const txnCounts = useMemo(() => {
+    const map = new Map();
+    for (let i = 0; i < transactions.length; i++) {
+      const id = transactions[i].accountId;
+      map.set(id, (map.get(id) || 0) + 1);
+    }
+    return map;
+  }, [transactions]);
+
+  const procCounts = useMemo(() => {
+    const map = new Map();
+    for (let i = 0; i < processed.length; i++) {
+      const id = processed[i].accountId;
+      map.set(id, (map.get(id) || 0) + 1);
+    }
+    return map;
+  }, [processed]);
+
+  const excCounts = useMemo(() => {
+    const map = new Map();
+    for (let i = 0; i < exceptions.length; i++) {
+      const id = exceptions[i].accountId;
+      map.set(id, (map.get(id) || 0) + 1);
+    }
+    return map;
+  }, [exceptions]);
 
   const formatCurrency = (val) => {
     return '₹' + Number(val || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -19,6 +53,10 @@ export default function BankingView({ accounts, transactions, processed, excepti
     acc.name.toLowerCase().includes(filterQuery.toLowerCase()) ||
     (acc.type && acc.type.toLowerCase().includes(filterQuery.toLowerCase()))
   );
+
+  const totalPages = Math.max(1, Math.ceil(filteredAccounts.length / pageSize));
+  const currentPage = Math.min(page, totalPages);
+  const displayedAccounts = filteredAccounts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
     <div style={{ padding: '0 24px 24px 24px' }}>
@@ -155,10 +193,10 @@ export default function BankingView({ accounts, transactions, processed, excepti
 
       {/* Account Cards Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '12px' }}>
-        {filteredAccounts.map(acc => {
-          const accTxns = transactions.filter(t => t.accountId === acc.id);
-          const accProcessed = processed.filter(p => p.accountId === acc.id);
-          const accExceptions = exceptions.filter(e => e.accountId === acc.id);
+        {displayedAccounts.map(acc => {
+          const stagedCount = txnCounts.get(acc.id) || 0;
+          const clearedCount = procCounts.get(acc.id) || 0;
+          const suspenseCount = excCounts.get(acc.id) || 0;
 
           return (
             <div key={acc.id} className="account-card animate-fade-in">
@@ -208,20 +246,20 @@ export default function BankingView({ accounts, transactions, processed, excepti
               }}>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>STAGED</div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: accTxns.length > 0 ? 'var(--matrix-green)' : 'var(--text-muted)' }}>
-                    {accTxns.length}
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: stagedCount > 0 ? 'var(--matrix-green)' : 'var(--text-muted)' }}>
+                    {stagedCount}
                   </div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>CLEARED</div>
                   <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
-                    {accProcessed.length}
+                    {clearedCount}
                   </div>
                 </div>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>SUSPENSE</div>
-                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: accExceptions.length > 0 ? 'var(--crimson-danger)' : 'var(--text-muted)' }}>
-                    {accExceptions.length}
+                  <div style={{ fontFamily: 'var(--font-mono)', fontSize: '12px', fontWeight: 700, color: suspenseCount > 0 ? 'var(--crimson-danger)' : 'var(--text-muted)' }}>
+                    {suspenseCount}
                   </div>
                 </div>
               </div>
@@ -250,6 +288,48 @@ export default function BankingView({ accounts, transactions, processed, excepti
           );
         })}
       </div>
+
+      {/* Pagination Controls for Accounts */}
+      {totalPages > 1 && (
+        <div style={{
+          marginTop: '16px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px',
+          fontFamily: 'var(--font-mono)',
+          fontSize: '11px'
+        }}>
+          <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+            SHOWING ACCOUNTS {(currentPage - 1) * pageSize + 1}-{Math.min(currentPage * pageSize, filteredAccounts.length)} OF {filteredAccounts.length}
+          </span>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage <= 1}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              style={{ padding: '6px 12px', fontSize: '10px' }}
+            >
+              <ChevronLeft size={12} />
+              <span>PREV PAGE</span>
+            </button>
+            <span style={{ color: 'var(--matrix-green)', fontWeight: 700, fontSize: '11px', padding: '0 8px' }}>
+              PAGE {currentPage} OF {totalPages}
+            </span>
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              style={{ padding: '6px 12px', fontSize: '10px' }}
+            >
+              <span>NEXT PAGE</span>
+              <ChevronRight size={12} />
+            </button>
+          </div>
+        </div>
+      )}
 
     </div>
   );

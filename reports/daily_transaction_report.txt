@@ -4,18 +4,18 @@
 
 BATCH JOB       : BATCHJOB
 PROCESSOR       : TRANPROC
-PROCESS DATE    : 2026-10-28
+PROCESS DATE    : 2026-10-29
 INPUT FILE      : transactions.dat
 
 ----------------------------------------------------------------------
 TRANSACTION SUMMARY
 ----------------------------------------------------------------------
 
-TOTAL TRANSACTIONS PROCESSED : 12
-SUCCESSFUL TRANSACTIONS       : 11
-FAILED TRANSACTIONS           : 1
-TOTAL CREDIT AMOUNT           : 62000.00
-TOTAL DEBIT ATTEMPTS          : 258000.00
+TOTAL TRANSACTIONS PROCESSED : 10000
+SUCCESSFUL TRANSACTIONS       : 9950
+FAILED TRANSACTIONS           : 50
+TOTAL CREDIT AMOUNT           : 204008250.00
+TOTAL DEBIT ATTEMPTS          : 49454575.00
 
 ======================================================================
                          END OF REPORT

@@ -8,6 +8,7 @@
     "server": "node server/index.js",
     "client": "npm run dev --prefix client",
     "dev": "concurrently -n \"SERVER,CLIENT\" -c \"blue,cyan\" \"node server/index.js\" \"npm run dev --prefix client\"",
+    "generate:10k": "node server/generateDataset.js 10000 500",
     "build": "npm run build --prefix client"
   },
   "keywords": [

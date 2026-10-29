@@ -48,11 +48,11 @@ export default function ReconciliationView({ reports }) {
     return match ? Number(match[1]) : defaultVal;
   };
 
-  const parsedCredits = extractMatch(/TOTAL CREDIT TRANSACTIONS\s*:\s*([\d.]+)/, 62000);
-  const parsedDebits = extractMatch(/TOTAL SUCCESSFUL DEBITS\s*:\s*([\d.]+)/, 58000);
-  const parsedRejected = extractMatch(/REJECTED DEBIT\s*:\s*([\d.]+)/, 200000);
-  const parsedOpening = extractMatch(/TOTAL OPENING BALANCE\s*:\s*([\d.]+)/, 373000);
-  const parsedFinal = extractMatch(/ACTUAL FINAL BALANCE\s*:\s*([\d.]+)/, 377000);
+  const parsedCredits = extractMatch(/TOTAL CREDIT TRANSACTIONS\s*:\s*([\d.]+)/, 0);
+  const parsedDebits = extractMatch(/TOTAL SUCCESSFUL DEBITS\s*:\s*([\d.]+)/, 0);
+  const parsedRejected = extractMatch(/REJECTED DEBIT\s*:\s*([\d.]+)/, 0);
+  const parsedOpening = extractMatch(/TOTAL OPENING BALANCE\s*:\s*([\d.]+)/, 0);
+  const parsedFinal = extractMatch(/ACTUAL FINAL BALANCE\s*:\s*([\d.]+)/, 0);
   const isBalanced = rawReconText.includes('BALANCED') || true;
 
   const currentReportContent = isTextMap ? (reports[activeReportKey] || 'NO REPORT CONTENT') : JSON.stringify(reports, null, 2);
