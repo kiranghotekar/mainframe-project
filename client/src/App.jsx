@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import Header from './components/Header';
-import Navigation from './components/Navigation';
+import Sidebar from './components/Sidebar';
+import TopBar from './components/TopBar';
 import BankingView from './views/BankingView';
+import AccountsView from './views/AccountsView';
 import JesSpoolView from './views/JesSpoolView';
 import DatabaseView from './views/DatabaseView';
 import ExceptionsView from './views/ExceptionsView';
@@ -205,59 +206,42 @@ export default function App() {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', background: 'var(--bg-primary)' }}>
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--bg-primary)' }}>
       
       {/* Toast Notification */}
       {notification && (
         <div style={{
           position: 'fixed',
-          top: '16px',
+          top: '20px',
           right: '24px',
           zIndex: 9999,
-          background: notification.type === 'error' ? 'var(--crimson-bg)' : notification.type === 'warning' ? 'var(--amber-bg)' : 'var(--matrix-green-bg)',
-          border: `1px solid ${notification.type === 'error' ? 'var(--crimson-border)' : notification.type === 'warning' ? 'var(--amber-border)' : 'var(--matrix-green-border)'}`,
-          color: notification.type === 'error' ? 'var(--crimson-danger)' : notification.type === 'warning' ? 'var(--amber-warning)' : 'var(--matrix-green)',
-          padding: '10px 18px',
+          background: 'var(--bg-card)',
+          border: `1px solid ${notification.type === 'error' ? 'var(--crimson-border)' : notification.type === 'warning' ? 'var(--amber-border)' : 'var(--border-default)'}`,
+          color: 'var(--text-primary)',
+          padding: '12px 20px',
           borderRadius: 'var(--radius-md)',
-          fontFamily: 'var(--font-mono)',
-          fontSize: '11px',
-          fontWeight: 700,
-          letterSpacing: '0.04em',
-          boxShadow: 'var(--shadow-md)',
+          fontFamily: 'var(--font-ui)',
+          fontSize: '13px',
+          fontWeight: 600,
+          boxShadow: 'var(--shadow-lg)',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-          animation: 'fadeIn 0.15s ease'
+          gap: '10px',
+          animation: 'fadeIn 0.18s ease'
         }}>
           <span style={{
-            width: '6px',
-            height: '6px',
+            width: '8px',
+            height: '8px',
             borderRadius: '50%',
-            background: notification.type === 'error' ? 'var(--crimson-danger)' : notification.type === 'warning' ? 'var(--amber-warning)' : 'var(--matrix-green)',
-            boxShadow: `0 0 8px ${notification.type === 'error' ? 'var(--crimson-danger)' : notification.type === 'warning' ? 'var(--amber-warning)' : 'var(--matrix-green)'}`
+            background: notification.type === 'error' ? 'var(--crimson-danger)' : notification.type === 'warning' ? 'var(--amber-warning)' : 'var(--brand-teal)',
+            boxShadow: `0 0 8px ${notification.type === 'error' ? 'var(--crimson-danger)' : notification.type === 'warning' ? 'var(--amber-warning)' : 'var(--brand-teal)'}`
           }} />
           {notification.msg}
         </div>
       )}
 
-      {/* Mainframe Header & Global Actions */}
-      <Header
-        telemetry={telemetry}
-        onRunBatch={handleRunBatch}
-        onReset={handleReset}
-        onGenerate10k={handleGenerate10k}
-        onOpenTxnModal={() => {
-          setQuickTxnConfig({ accountId: accounts[0]?.id || '100001', type: 'CREDIT' });
-          setIsTxnModalOpen(true);
-        }}
-        onOpenAccModal={() => setIsAccModalOpen(true)}
-        isProcessing={isProcessing}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-
-      {/* Tabs Navigation */}
-      <Navigation
+      {/* Persistent Left Sidebar */}
+      <Sidebar
         activeTab={activeTab}
         onTabChange={setActiveTab}
         badgeCounts={{
@@ -266,58 +250,126 @@ export default function App() {
           exceptions: exceptions.length,
           isProcessing
         }}
+        telemetry={telemetry}
+        theme={theme}
+        onToggleTheme={toggleTheme}
+        onGenerate10k={handleGenerate10k}
+        isProcessing={isProcessing}
       />
 
       {/* Main Content Area */}
-      <main style={{ flex: 1 }}>
-        {activeTab === 'banking' && (
-          <BankingView
-            accounts={accounts}
-            transactions={transactions}
-            processed={processed}
-            exceptions={exceptions}
-            onQuickTxn={handleQuickTxn}
-            onRunBatch={handleRunBatch}
-            isProcessing={isProcessing}
-          />
-        )}
+      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0, height: '100vh', overflowY: 'auto' }}>
+        
+        {/* Top App Bar */}
+        <TopBar
+          activeTab={activeTab}
+          onRunBatch={handleRunBatch}
+          onReset={handleReset}
+          onOpenTxnModal={() => {
+            setQuickTxnConfig({ accountId: accounts[0]?.id || '100001', type: 'CREDIT' });
+            setIsTxnModalOpen(true);
+          }}
+          onOpenAccModal={() => setIsAccModalOpen(true)}
+          isProcessing={isProcessing}
+          pendingCount={transactions.length}
+        />
 
-        {activeTab === 'spool' && (
-          <JesSpoolView
-            batchResult={batchResult}
-            onRunBatch={handleRunBatch}
-            isProcessing={isProcessing}
-          />
-        )}
+        {/* View Switcher */}
+        <main style={{ flex: 1 }}>
+          {activeTab === 'banking' && (
+            <BankingView
+              accounts={accounts}
+              transactions={transactions}
+              processed={processed}
+              exceptions={exceptions}
+              onQuickTxn={handleQuickTxn}
+              onRunBatch={handleRunBatch}
+              onOpenTxnModal={() => setIsTxnModalOpen(true)}
+              onNavigateTab={setActiveTab}
+              onGenerate10k={handleGenerate10k}
+              isProcessing={isProcessing}
+            />
+          )}
 
-        {activeTab === 'database' && (
-          <DatabaseView
-            accounts={accounts}
-            transactions={transactions}
-            processed={processed}
-            exceptions={exceptions}
-          />
-        )}
+          {activeTab === 'accounts' && (
+            <AccountsView
+              accounts={accounts}
+              transactions={transactions}
+              processed={processed}
+              exceptions={exceptions}
+              onQuickTxn={handleQuickTxn}
+            />
+          )}
 
-        {activeTab === 'exceptions' && (
-          <ExceptionsView
-            exceptions={exceptions}
-            accounts={accounts}
-            onFundAndRetry={handleFundAndRetry}
-          />
-        )}
+          {activeTab === 'spool' && (
+            <JesSpoolView
+              batchResult={batchResult}
+              onRunBatch={handleRunBatch}
+              isProcessing={isProcessing}
+            />
+          )}
 
-        {activeTab === 'reconciliation' && (
-          <ReconciliationView
-            reports={reports}
-            accounts={accounts}
-          />
-        )}
+          {activeTab === 'database' && (
+            <DatabaseView
+              accounts={accounts}
+              transactions={transactions}
+              processed={processed}
+              exceptions={exceptions}
+            />
+          )}
 
-        {activeTab === 'code' && (
-          <CodeStudioView />
-        )}
-      </main>
+          {activeTab === 'exceptions' && (
+            <ExceptionsView
+              exceptions={exceptions}
+              accounts={accounts}
+              onFundAndRetry={handleFundAndRetry}
+            />
+          )}
+
+          {activeTab === 'reconciliation' && (
+            <ReconciliationView
+              reports={reports}
+              accounts={accounts}
+            />
+          )}
+
+          {activeTab === 'code' && (
+            <CodeStudioView />
+          )}
+        </main>
+
+        {/* System Telemetry Institutional Footer */}
+        <footer style={{
+          padding: '12px 28px',
+          borderTop: '1px solid var(--border-subtle)',
+          background: 'var(--bg-card)',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '12px',
+          fontSize: '11px',
+          color: 'var(--text-muted)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span style={{
+              width: '7px',
+              height: '7px',
+              borderRadius: '50%',
+              background: 'var(--brand-teal)',
+              display: 'inline-block',
+              boxShadow: '0 0 6px var(--brand-teal)'
+            }} />
+            <span style={{ fontWeight: 600 }}>IBM z16 / z/OS 2.5 LPAR SYS1 • Core Banking Online</span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <span>CLASS A / SYSDA</span>
+            <span style={{ color: 'var(--brand-teal)', fontWeight: 600 }}>VSAM KSDS MASTER MOUNTED</span>
+            <span>HIGH-VOLUME BATCH ENGINE</span>
+          </div>
+        </footer>
+
+      </div>
 
       {/* Modals */}
       <StageTransactionModal
@@ -335,38 +387,6 @@ export default function App() {
         accounts={accounts}
         onSubmit={handleOnboardAccount}
       />
-
-      {/* Footer with IBM Mainframe System Status */}
-      <footer style={{
-        padding: '10px 24px',
-        borderTop: '1px solid var(--border-subtle)',
-        background: 'var(--bg-secondary)',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        flexWrap: 'wrap',
-        gap: '12px',
-        fontSize: '11px',
-        fontFamily: 'var(--font-mono)',
-        color: 'var(--text-muted)'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{
-            width: '6px',
-            height: '6px',
-            borderRadius: '1px',
-            background: 'var(--matrix-green)',
-            display: 'inline-block',
-            boxShadow: '0 0 6px var(--matrix-green)'
-          }} />
-          <span>IBM z16 / z/OS 2.5 LPAR SYS1 | JES2 ONLINE | VSAM KSDS CLUSTER ACCESSIBLE</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <span>ENCLAVE: TRANPROC_STC</span>
-          <span style={{ color: 'var(--matrix-green)' }}>ENCODING: EBCDIC-037 / UTF-8</span>
-          <span style={{ color: 'var(--text-secondary)' }}>HIGH-VOLUME BATCH ENGINE</span>
-        </div>
-      </footer>
 
     </div>
   );
