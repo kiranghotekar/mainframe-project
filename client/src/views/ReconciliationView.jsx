@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileCheck, Copy, Check, Download } from 'lucide-react';
+import { FileCheck, Copy, Check, Download, ShieldCheck, TrendingUp, TrendingDown } from 'lucide-react';
 
 export default function ReconciliationView({ reports }) {
   const [activeReportKey, setActiveReportKey] = useState('reconciliation_report.txt');
@@ -11,27 +11,27 @@ export default function ReconciliationView({ reports }) {
 
   if (!reports) {
     return (
-      <div style={{ padding: '36px 24px', textAlign: 'center' }}>
-        <div className="glass-panel" style={{ maxWidth: '500px', margin: '0 auto', padding: '36px 28px', borderRadius: 'var(--radius-lg)' }}>
+      <div style={{ padding: '40px 30px', textAlign: 'center' }}>
+        <div className="glass-panel" style={{ maxWidth: '540px', margin: '0 auto', padding: '40px 32px', borderRadius: '16px' }}>
           <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--matrix-green-bg)',
-            border: '1px solid var(--matrix-green-border)',
+            width: '52px',
+            height: '52px',
+            borderRadius: '50%',
+            background: 'var(--brand-navy-pale)',
+            border: '1px solid var(--brand-navy-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 16px'
+            margin: '0 auto 16px',
+            color: 'var(--brand-navy-light)'
           }}>
-            <FileCheck size={26} color="var(--matrix-green)" />
+            <FileCheck size={28} />
           </div>
-          <h2 style={{ fontSize: '14px', fontWeight: 700, marginBottom: '6px', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            NO AUDIT RECONCILIATION REPORT GENERATED
+          <h2 style={{ fontSize: '16px', fontWeight: 800, marginBottom: '8px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+            No Audit Reconciliation Report Generated
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '11px', fontFamily: 'var(--font-mono)', lineHeight: 1.6 }}>
-            EXECUTE A BATCH JOB (JCL //BATCHJOB EXEC PGM=TRANPROC) TO RECONCILE STAGED
-            TRANSACTIONS AGAINST THE VSAM KSDS MASTER AND GENERATE AUDIT PROOF REPORTS.
+          <p style={{ color: 'var(--text-secondary)', fontSize: '13px', lineHeight: 1.6 }}>
+            Execute an overnight batch clearing job (JCL //BATCHJOB EXEC PGM=TRANPROC) to reconcile staged transactions against the VSAM KSDS Master and produce mathematical financial proof reports.
           </p>
         </div>
       </div>
@@ -83,92 +83,93 @@ export default function ReconciliationView({ reports }) {
   ];
 
   return (
-    <div style={{ padding: '0 24px 24px' }}>
+    <div style={{ padding: '26px 30px' }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <div style={{
-            width: '32px',
-            height: '32px',
-            borderRadius: 'var(--radius-sm)',
+            width: '38px',
+            height: '38px',
+            borderRadius: '10px',
             background: 'var(--brand-navy-pale)',
+            border: '1px solid var(--brand-navy-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--brand-navy-mid)'
+            color: 'var(--brand-navy-light)'
           }}>
-            <FileCheck size={18} />
+            <FileCheck size={20} />
           </div>
           <div>
-            <h2 style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-display)', letterSpacing: '-0.01em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
-              BATCH RECONCILIATION & AUDIT PROOF // PGM=RECONCL
+            <h2 style={{ fontSize: '18px', fontWeight: 800, fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+              Batch Reconciliation & Financial Audit Proof
             </h2>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontFamily: 'var(--font-ui)', marginTop: '2px' }}>
-              Mathematical proof verifying Opening Balance + Credits − Debits = Closing Balance
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '2px' }}>
+              Mathematical proof verifying Opening Balance + Credits − Debits = Closing Balance (RC=0000)
             </p>
           </div>
         </div>
-        <span className="badge badge-success" style={{ fontSize: '11px', padding: '4px 10px' }}>
+        <span className="badge badge-success" style={{ fontSize: '11px', padding: '4px 12px' }}>
           {isBalanced ? '✓ AUDIT PROOF BALANCED (RC=0000)' : '⚠ OUT OF BALANCE (RC=0008)'}
         </span>
       </div>
 
-      {/* Summary KPI Matrix */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px', marginBottom: '20px' }}>
+      {/* Summary KPI Matrix with faint, positive pastel cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '16px', marginBottom: '22px' }}>
         
-        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--brand-teal)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '14px', borderLeft: '4px solid var(--emerald-success)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 700, marginBottom: '6px' }}>
             TOTAL COMMITTED CREDITS
           </div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--brand-teal)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--emerald-success)' }}>
             +{formatCurrency(parsedCredits)}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
-            ALL SYSTEM INFLOWS
+            All System Deposit Inflows
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--brand-navy-light)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '14px', borderLeft: '4px solid var(--brand-navy-light)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 700, marginBottom: '6px' }}>
             CLEARED DEBITS (OUTFLOW)
           </div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--brand-navy-light)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--brand-navy-light)' }}>
             -{formatCurrency(parsedDebits)}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
-            VERIFIED SUFFICIENT BALANCE
+            Verified Sufficient Balance
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--crimson-danger)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '14px', borderLeft: '4px solid var(--crimson-danger)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 700, marginBottom: '6px' }}>
             SUSPENDED DEBIT REJECTS
           </div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: parsedRejected > 0 ? 'var(--crimson-danger)' : 'var(--emerald-success)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 800, color: parsedRejected > 0 ? 'var(--crimson-danger)' : 'var(--emerald-success)' }}>
             {formatCurrency(parsedRejected)}
           </div>
           <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
-            ROUTED TO SUSPENSE QUEUE
+            Routed to Suspense Queue
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--brand-navy-mid)' }}>
-          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
+        <div className="glass-panel" style={{ padding: '18px 20px', borderRadius: '14px', borderLeft: '4px solid var(--brand-navy)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 700, marginBottom: '6px' }}>
             FINAL RECONCILED SYSTEM BALANCE
           </div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--text-primary)' }}>
             {formatCurrency(parsedFinal)}
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--brand-teal)', fontFamily: 'var(--font-ui)', fontWeight: 600, marginTop: '4px' }}>
-            OPENING {formatCurrency(parsedOpening)} + NET DELTA
+          <div style={{ fontSize: '11px', color: 'var(--emerald-success)', fontFamily: 'var(--font-ui)', fontWeight: 700, marginTop: '4px' }}>
+            Opening {formatCurrency(parsedOpening)} + Net Delta
           </div>
         </div>
 
       </div>
 
       {/* Generated Report Selector Tabs & Terminal Viewer */}
-      <div className="glass-panel" style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div className="glass-panel" style={{ borderRadius: '14px', overflow: 'hidden' }}>
         
         {/* Report Selector Header */}
         <div style={{
@@ -176,12 +177,12 @@ export default function ReconciliationView({ reports }) {
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          gap: '8px',
-          padding: '8px 12px',
-          background: 'var(--bg-secondary)',
+          gap: '10px',
+          padding: '10px 16px',
+          background: 'var(--bg-card)',
           borderBottom: '1px solid var(--border-subtle)'
         }}>
-          <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', maxWidth: '100%' }}>
+          <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', maxWidth: '100%' }}>
             {reportTabs.map(tab => {
               const isActive = activeReportKey === tab.key;
               return (
@@ -189,16 +190,17 @@ export default function ReconciliationView({ reports }) {
                   key={tab.key}
                   onClick={() => setActiveReportKey(tab.key)}
                   style={{
-                    padding: '6px 10px',
-                    borderRadius: 'var(--radius-sm)',
-                    background: isActive ? 'var(--matrix-green-bg)' : 'transparent',
-                    border: isActive ? '1px solid var(--matrix-green-border)' : '1px solid transparent',
-                    color: isActive ? 'var(--matrix-green)' : 'var(--text-muted)',
+                    padding: '7px 12px',
+                    borderRadius: '8px',
+                    background: isActive ? 'var(--brand-navy-pale)' : 'transparent',
+                    border: isActive ? '1px solid var(--brand-navy-border)' : '1px solid transparent',
+                    color: isActive ? 'var(--brand-navy-light)' : 'var(--text-secondary)',
                     fontFamily: 'var(--font-mono)',
-                    fontSize: '10px',
+                    fontSize: '11px',
                     fontWeight: 700,
                     cursor: 'pointer',
-                    whiteSpace: 'nowrap'
+                    whiteSpace: 'nowrap',
+                    transition: 'all var(--transition-fast)'
                   }}
                 >
                   {tab.label}
@@ -207,12 +209,12 @@ export default function ReconciliationView({ reports }) {
             })}
           </div>
 
-          <div style={{ display: 'flex', gap: '6px' }}>
-            <button className="btn btn-secondary" style={{ fontSize: '9px', padding: '4px 8px' }} onClick={copyToClipboard}>
-              {copied ? <><Check size={11} /> COPIED</> : <><Copy size={11} /> COPY</>}
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <button className="btn btn-secondary" style={{ fontSize: '11px', padding: '6px 12px' }} onClick={copyToClipboard}>
+              {copied ? <><Check size={12} color="var(--emerald-success)" /> COPIED</> : <><Copy size={12} /> COPY</>}
             </button>
-            <button className="btn btn-secondary" style={{ fontSize: '9px', padding: '4px 8px' }} onClick={downloadReport}>
-              <Download size={11} />
+            <button className="btn btn-secondary" style={{ fontSize: '11px', padding: '6px 12px' }} onClick={downloadReport}>
+              <Download size={12} />
               <span>EXPORT</span>
             </button>
           </div>
@@ -221,14 +223,15 @@ export default function ReconciliationView({ reports }) {
         {/* Terminal Print Spool Screen */}
         <div className="terminal-screen" style={{ margin: 0, borderRadius: 0, border: 'none' }}>
           <pre style={{
-            padding: '16px 20px',
+            padding: '18px 22px',
             margin: 0,
             fontFamily: 'var(--font-mono)',
-            fontSize: '11px',
+            fontSize: '11.5px',
             lineHeight: 1.6,
             maxHeight: '62vh',
             overflow: 'auto',
-            whiteSpace: 'pre'
+            whiteSpace: 'pre',
+            color: 'var(--terminal-green)'
           }}>
             {currentReportContent}
           </pre>

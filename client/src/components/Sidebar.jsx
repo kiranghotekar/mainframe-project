@@ -80,8 +80,8 @@ export default function Sidebar({
 
   return (
     <aside style={{
-      width: '260px',
-      minWidth: '260px',
+      width: '268px',
+      minWidth: '268px',
       background: 'var(--bg-card)',
       borderRight: '1px solid var(--border-subtle)',
       display: 'flex',
@@ -94,22 +94,22 @@ export default function Sidebar({
     }}>
       {/* Brand Header */}
       <div style={{
-        padding: '20px 20px 16px 20px',
+        padding: '20px 20px 18px 20px',
         borderBottom: '1px solid var(--border-hairline)',
         display: 'flex',
         alignItems: 'center',
         gap: '12px'
       }}>
         <div style={{
-          width: '38px',
-          height: '38px',
-          borderRadius: 'var(--radius-md)',
-          background: 'var(--gradient-header)',
+          width: '40px',
+          height: '40px',
+          borderRadius: '12px',
+          background: 'linear-gradient(135deg, #0F172A 0%, #1E40AF 100%)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           color: '#FFFFFF',
-          boxShadow: '0 4px 12px rgba(26, 43, 107, 0.25)',
+          boxShadow: '0 4px 14px rgba(30, 64, 175, 0.28)',
           flexShrink: 0
         }}>
           <Server size={20} strokeWidth={2.2} />
@@ -133,13 +133,13 @@ export default function Sidebar({
             fontWeight: 600,
             letterSpacing: '0.02em'
           }}>
-            Core Banking & Batch Portal
+            Institutional Net Banking
           </div>
         </div>
       </div>
 
       {/* Main Navigation Items */}
-      <div style={{ flex: 1, padding: '14px 12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <div style={{ flex: 1, padding: '16px 12px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         <div style={{ 
           fontSize: '10px', 
           fontWeight: 700, 
@@ -148,12 +148,12 @@ export default function Sidebar({
           letterSpacing: '0.08em', 
           padding: '4px 10px 8px 10px' 
         }}>
-          Main Menu
+          Navigation
         </div>
 
         {menuItems.map(item => {
           const Icon = item.icon;
-          const isActive = activeTab === item.id || (item.id === 'accounts' && activeTab === 'accounts');
+          const isActive = activeTab === item.id;
 
           return (
             <button
@@ -164,29 +164,45 @@ export default function Sidebar({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                padding: '9px 12px',
-                borderRadius: 'var(--radius-sm)',
+                padding: '10px 12px',
+                borderRadius: '10px',
                 background: isActive ? 'var(--brand-navy-pale)' : 'transparent',
-                border: isActive ? '1px solid var(--border-default)' : '1px solid transparent',
+                border: isActive ? '1px solid var(--brand-navy-border)' : '1px solid transparent',
                 color: isActive ? 'var(--brand-navy-mid)' : 'var(--text-secondary)',
                 cursor: 'pointer',
                 transition: 'all var(--transition-fast)',
                 textAlign: 'left',
-                boxShadow: isActive ? 'var(--shadow-xs)' : 'none'
+                position: 'relative',
+                boxShadow: isActive ? '0 1px 3px rgba(37, 99, 235, 0.08)' : 'none'
               }}
               className="sidebar-nav-btn"
             >
+              {/* Left active accent bar */}
+              {isActive && (
+                <div style={{
+                  position: 'absolute',
+                  left: 0,
+                  top: '18%',
+                  bottom: '18%',
+                  width: '3.5px',
+                  borderRadius: '0 4px 4px 0',
+                  background: 'var(--brand-navy-light)'
+                }} />
+              )}
+
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <Icon 
-                  size={17} 
-                  color={isActive ? 'var(--brand-navy-mid)' : 'var(--text-muted)'} 
+                  size={18} 
+                  color={isActive ? 'var(--brand-navy-light)' : 'var(--text-muted)'} 
+                  strokeWidth={isActive ? 2.3 : 1.9}
                 />
                 <div>
                   <div style={{ 
                     fontSize: '13px', 
                     fontWeight: isActive ? 700 : 500, 
-                    lineHeight: 1.2,
-                    fontFamily: 'var(--font-ui)'
+                    lineHeight: 1.25,
+                    fontFamily: 'var(--font-ui)',
+                    color: isActive ? 'var(--text-primary)' : 'var(--text-secondary)'
                   }}>
                     {item.label}
                   </div>
@@ -202,12 +218,12 @@ export default function Sidebar({
 
               {item.count !== undefined && item.count > 0 && (
                 <span style={{
-                  background: item.isDanger ? 'var(--crimson-bg)' : 'var(--bg-tertiary)',
-                  color: item.isDanger ? 'var(--crimson-danger)' : 'var(--brand-navy-mid)',
-                  border: item.isDanger ? '1px solid var(--crimson-border)' : '1px solid var(--border-hairline)',
+                  background: item.isDanger ? 'var(--crimson-bg)' : 'var(--emerald-bg)',
+                  color: item.isDanger ? 'var(--crimson-danger)' : 'var(--emerald-success)',
+                  border: item.isDanger ? '1px solid var(--crimson-border)' : '1px solid var(--emerald-border)',
                   fontSize: '10px',
                   fontWeight: 700,
-                  padding: '2px 7px',
+                  padding: '2px 8px',
                   borderRadius: 'var(--radius-full)'
                 }}>
                   {item.count}
@@ -231,14 +247,15 @@ export default function Sidebar({
         {/* 10K Dataset Generator Widget inside Sidebar */}
         <div style={{
           marginTop: '16px',
-          padding: '12px',
+          padding: '12px 14px',
           background: 'var(--brand-gold-bg)',
-          border: '1px solid rgba(201, 147, 58, 0.25)',
-          borderRadius: 'var(--radius-md)'
+          border: '1px solid var(--brand-gold-border)',
+          borderRadius: '12px',
+          boxShadow: '0 1px 3px rgba(217, 119, 6, 0.06)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--brand-gold)', fontWeight: 700, fontSize: '11px' }}>
             <Sparkles size={13} />
-            <span>ENTERPRISE SCALE</span>
+            <span>ENTERPRISE BATCH BENCHMARK</span>
           </div>
           <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '4px', lineHeight: 1.4 }}>
             Stress test with 10,000 transactions across 500 accounts.
@@ -248,18 +265,20 @@ export default function Sidebar({
             disabled={isProcessing}
             style={{
               width: '100%',
-              marginTop: '8px',
-              padding: '6px 10px',
+              marginTop: '10px',
+              padding: '7px 12px',
               fontSize: '11px',
               fontWeight: 700,
-              background: 'var(--brand-gold)',
+              background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
               color: '#FFFFFF',
               border: 'none',
-              borderRadius: 'var(--radius-sm)',
-              cursor: 'pointer'
+              borderRadius: '8px',
+              cursor: isProcessing ? 'not-allowed' : 'pointer',
+              boxShadow: '0 2px 6px rgba(217, 119, 6, 0.25)',
+              transition: 'all var(--transition-fast)'
             }}
           >
-            {isProcessing ? 'GENERATING...' : 'LOAD 10K ROWS'}
+            {isProcessing ? 'PROVISIONING...' : '⚡ GENERATE 10K ROWS'}
           </button>
         </div>
       </div>
@@ -280,16 +299,19 @@ export default function Sidebar({
               width: '8px',
               height: '8px',
               borderRadius: '50%',
-              background: 'var(--brand-teal)',
-              boxShadow: '0 0 6px var(--brand-teal)'
+              background: 'var(--emerald-success)',
+              boxShadow: '0 0 6px var(--emerald-success)'
             }} />
-            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>JES2 ONLINE</span>
+            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>JES2 SPOOL ONLINE</span>
           </div>
           <span style={{ 
             fontFamily: 'var(--font-mono)', 
             fontSize: '10px', 
             fontWeight: 700,
-            color: 'var(--brand-navy-light)'
+            color: 'var(--brand-navy-light)',
+            background: 'var(--brand-navy-pale)',
+            padding: '2px 6px',
+            borderRadius: '4px'
           }}>
             {lastRC}
           </span>
@@ -301,46 +323,52 @@ export default function Sidebar({
           alignItems: 'center',
           justifyContent: 'space-between',
           paddingTop: '8px',
-          borderTop: '1px solid var(--border-hairline)'
+          borderTop: '1px solid var(--border-subtle)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{
-              width: '28px',
-              height: '28px',
+              width: '30px',
+              height: '30px',
               borderRadius: '50%',
-              background: 'var(--brand-navy-pale)',
-              color: 'var(--brand-navy-mid)',
+              background: 'linear-gradient(135deg, #1E40AF 0%, #2563EB 100%)',
+              color: '#FFFFFF',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               fontWeight: 700,
-              fontSize: '11px'
+              fontSize: '11px',
+              boxShadow: '0 2px 6px rgba(37, 99, 235, 0.25)'
             }}>
               KG
             </div>
             <div>
-              <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)' }}>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text-primary)' }}>
                 Kiran Ghotekar
               </div>
               <div style={{ fontSize: '10px', color: 'var(--text-muted)' }}>
-                Batch Ops & COBOL Lead
+                Financial & COBOL Lead
               </div>
             </div>
           </div>
 
           <button
             onClick={onToggleTheme}
-            title={theme === 'dark' ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
+            title={theme === 'dark' ? 'Switch to Light Banking Theme' : 'Switch to Dark Mode'}
             style={{
               background: 'var(--bg-card)',
-              border: '1px solid var(--border-default)',
-              borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '8px',
               padding: '6px',
               cursor: 'pointer',
-              color: 'var(--text-secondary)'
+              color: 'var(--text-secondary)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 1px 2px rgba(15, 23, 42, 0.05)',
+              transition: 'all var(--transition-fast)'
             }}
           >
-            {theme === 'dark' ? <Sun size={13} color="#F59E0B" /> : <Moon size={13} color="var(--brand-navy-mid)" />}
+            {theme === 'dark' ? <Sun size={14} color="#F59E0B" /> : <Moon size={14} color="#2563EB" />}
           </button>
         </div>
       </div>

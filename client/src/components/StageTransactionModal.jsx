@@ -37,35 +37,36 @@ export default function StageTransactionModal({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={e => e.stopPropagation()}>
+      <div className="modal-content" onClick={e => e.stopPropagation()} style={{ borderRadius: '18px', maxWidth: '520px', padding: '24px' }}>
         
         {/* Modal Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
-              width: '36px',
-              height: '36px',
-              borderRadius: 'var(--radius-sm)',
+              width: '38px',
+              height: '38px',
+              borderRadius: '10px',
               background: 'var(--brand-navy-pale)',
+              border: '1px solid var(--brand-navy-border)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: 'var(--brand-navy-mid)'
+              color: 'var(--brand-navy-light)'
             }}>
               <PlusCircle size={18} />
             </div>
             <div>
-              <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-display)', letterSpacing: '-0.01em' }}>
-                STAGE BATCH TRANSACTION
+              <h3 style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)', fontFamily: 'var(--font-display)' }}>
+                Stage Batch Transaction
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '11px', fontFamily: 'var(--font-ui)', marginTop: '2px' }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '2px' }}>
                 Append new transaction to QSAM queue (data/transactions.dat)
               </p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '6px' }}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '6px', borderRadius: '6px' }}
           >
             <X size={18} />
           </button>
@@ -74,45 +75,50 @@ export default function StageTransactionModal({
         <form onSubmit={handleSubmit}>
           
           {/* Target Customer Account */}
-          <div className="form-group">
-            <label className="form-label">TARGET CUSTOMER ACCOUNT (VSAM RECORD KEY)</label>
+          <div className="form-group" style={{ marginBottom: '16px' }}>
+            <label className="form-label" style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+              Target Customer Account (VSAM Key)
+            </label>
             <select
               className="form-control"
               value={accountId}
               onChange={e => setAccountId(e.target.value)}
+              style={{ height: '38px' }}
             >
               {accounts.map(a => (
                 <option key={a.id} value={a.id}>
-                  ACCT-{a.id} | {a.name} ({a.type}) | AVAIL: ₹{(a.balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
+                  ACCT-{a.id} | {a.name} ({a.type}) | Avail: ₹{(a.balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Transaction Type */}
-          <div className="form-group">
-            <label className="form-label">TRANSACTION OPERATION</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+          {/* Transaction Operation Toggle */}
+          <div className="form-group" style={{ marginBottom: '16px' }}>
+            <label className="form-label" style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+              Transaction Operation
+            </label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
               <button
                 type="button"
                 onClick={() => setType('CREDIT')}
                 style={{
-                  padding: '10px',
-                  borderRadius: 'var(--radius-md)',
-                  border: type === 'CREDIT' ? '1px solid var(--matrix-green)' : '1px solid var(--border-subtle)',
-                  background: type === 'CREDIT' ? 'var(--matrix-green-bg)' : 'transparent',
-                  color: type === 'CREDIT' ? 'var(--matrix-green)' : 'var(--text-muted)',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: type === 'CREDIT' ? '1px solid var(--brand-teal-border)' : '1px solid var(--border-subtle)',
+                  background: type === 'CREDIT' ? 'var(--brand-teal-light)' : 'var(--bg-primary)',
+                  color: type === 'CREDIT' ? 'var(--emerald-success)' : 'var(--text-secondary)',
                   fontWeight: 700,
-                  fontSize: '11px',
-                  fontFamily: 'var(--font-mono)',
+                  fontSize: '12px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  transition: 'all var(--transition-fast)'
                 }}
               >
-                <ArrowDownLeft size={14} />
+                <ArrowDownLeft size={15} />
                 <span>CREDIT (DEPOSIT)</span>
               </button>
 
@@ -120,30 +126,32 @@ export default function StageTransactionModal({
                 type="button"
                 onClick={() => setType('DEBIT')}
                 style={{
-                  padding: '10px',
-                  borderRadius: 'var(--radius-md)',
-                  border: type === 'DEBIT' ? '1px solid var(--amber-warning)' : '1px solid var(--border-subtle)',
-                  background: type === 'DEBIT' ? 'var(--amber-bg)' : 'transparent',
-                  color: type === 'DEBIT' ? 'var(--amber-warning)' : 'var(--text-muted)',
+                  padding: '10px 14px',
+                  borderRadius: '10px',
+                  border: type === 'DEBIT' ? '1px solid var(--brand-coral-border)' : '1px solid var(--border-subtle)',
+                  background: type === 'DEBIT' ? 'var(--brand-coral-light)' : 'var(--bg-primary)',
+                  color: type === 'DEBIT' ? 'var(--crimson-danger)' : 'var(--text-secondary)',
                   fontWeight: 700,
-                  fontSize: '11px',
-                  fontFamily: 'var(--font-mono)',
+                  fontSize: '12px',
                   cursor: 'pointer',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  gap: '6px'
+                  gap: '6px',
+                  transition: 'all var(--transition-fast)'
                 }}
               >
-                <ArrowUpRight size={14} />
+                <ArrowUpRight size={15} />
                 <span>DEBIT (WITHDRAWAL)</span>
               </button>
             </div>
           </div>
 
           {/* Amount */}
-          <div className="form-group">
-            <label className="form-label">AMOUNT (₹ INR)</label>
+          <div className="form-group" style={{ marginBottom: '16px' }}>
+            <label className="form-label" style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+              Amount (₹ INR)
+            </label>
             <input
               type="number"
               step="0.01"
@@ -152,50 +160,54 @@ export default function StageTransactionModal({
               value={amount}
               onChange={e => setAmount(e.target.value)}
               required
+              style={{ height: '38px', fontSize: '14px' }}
             />
             {type === 'DEBIT' && selectedAcc && Number(amount) > selectedAcc.balance && (
-              <div style={{ color: 'var(--crimson-danger)', fontSize: '10px', fontFamily: 'var(--font-mono)', marginTop: '6px' }}>
-                [!] EXCEEDS BALANCE (₹{selectedAcc.balance.toFixed(2)}). COBOL TRANPROC WILL REJECT TO EXCEPTION SUSPENSE.
+              <div style={{ color: 'var(--crimson-danger)', fontSize: '11px', marginTop: '6px', fontWeight: 600 }}>
+                ⚠️ Exceeds current balance (₹{selectedAcc.balance.toFixed(2)}). TRANPROC will reject to Suspense Queue.
               </div>
             )}
           </div>
 
           {/* Description */}
-          <div className="form-group">
-            <label className="form-label">NARRATION / DESCRIPTION</label>
+          <div className="form-group" style={{ marginBottom: '18px' }}>
+            <label className="form-label" style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', color: 'var(--text-muted)', letterSpacing: '0.04em', display: 'block', marginBottom: '6px' }}>
+              Narration / Description
+            </label>
             <input
               type="text"
               placeholder="e.g. SALARY, VENDOR_PAYMENT, UTILITY"
               className="form-control"
               value={description}
               onChange={e => setDescription(e.target.value.toUpperCase())}
+              style={{ height: '38px' }}
             />
           </div>
 
-          {/* Mainframe File Preview */}
+          {/* Physical File Record Serialization Preview */}
           <div style={{
             background: 'var(--bg-primary)',
             border: '1px solid var(--border-subtle)',
-            borderRadius: 'var(--radius-sm)',
-            padding: '10px 12px',
-            marginBottom: '16px'
+            borderRadius: '10px',
+            padding: '12px 14px',
+            marginBottom: '20px'
           }}>
-            <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <Terminal size={10} color="var(--matrix-green)" />
-              PHYSICAL RECORD SERIALIZATION (transactions.dat)
+            <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', marginBottom: '4px', fontFamily: 'var(--font-mono)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Terminal size={12} color="var(--brand-navy-light)" />
+              <span>Physical Record Serialization (data/transactions.dat)</span>
             </div>
-            <code style={{ color: 'var(--matrix-green)', fontSize: '11px', fontFamily: 'var(--font-mono)', wordBreak: 'break-all' }}>
+            <code style={{ color: 'var(--brand-navy-light)', fontSize: '11.5px', fontFamily: 'var(--font-mono)', wordBreak: 'break-all', fontWeight: 600 }}>
               {previewLine}
             </code>
           </div>
 
-          {/* Submit */}
-          <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-            <button type="button" className="btn btn-secondary" onClick={onClose}>
-              CANCEL
+          {/* Actions */}
+          <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+            <button type="button" className="btn btn-secondary" onClick={onClose} style={{ padding: '8px 16px' }}>
+              Cancel
             </button>
-            <button type="submit" className="btn btn-mainframe">
-              STAGE INTO QUEUE
+            <button type="submit" className="btn btn-primary" style={{ padding: '8px 20px' }}>
+              Stage Transfer
             </button>
           </div>
 

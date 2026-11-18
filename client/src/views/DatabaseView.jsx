@@ -39,14 +39,14 @@ export default function DatabaseView({ accounts, transactions, processed, except
     }
     if (col === 'type') {
       return (
-        <span className={`badge ${val === 'CREDIT' ? 'badge-success' : val === 'DEBIT' ? 'badge-warning' : 'badge-cyan'}`} style={{ fontSize: '9px' }}>
+        <span className={`badge ${val === 'CREDIT' ? 'badge-success' : val === 'DEBIT' ? 'badge-danger' : 'badge-blue'}`} style={{ fontSize: '9px', padding: '2px 7px' }}>
           {val}
         </span>
       );
     }
     if (col === 'status') {
       return (
-        <span className={`badge ${val === 'ACTIVE' ? 'badge-success' : val === 'REJECTED' ? 'badge-danger' : 'badge-cyan'}`} style={{ fontSize: '9px' }}>
+        <span className={`badge ${val === 'ACTIVE' ? 'badge-success' : val === 'REJECTED' ? 'badge-danger' : 'badge-blue'}`} style={{ fontSize: '9px', padding: '2px 7px' }}>
           {val}
         </span>
       );
@@ -62,40 +62,41 @@ export default function DatabaseView({ accounts, transactions, processed, except
   };
 
   return (
-    <div style={{ padding: '0 24px 24px' }}>
+    <div style={{ padding: '26px 30px' }}>
       
       {/* Header & Dataset Overview */}
-      <div className="glass-panel" style={{ padding: '16px 20px', borderRadius: 'var(--radius-lg)', marginBottom: '16px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
+      <div className="glass-panel" style={{ padding: '20px 24px', borderRadius: '16px', marginBottom: '20px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <div style={{ 
-                width: '32px', 
-                height: '32px', 
-                borderRadius: 'var(--radius-sm)', 
+                width: '36px', 
+                height: '36px', 
+                borderRadius: '10px', 
                 background: 'var(--brand-navy-pale)', 
+                border: '1px solid var(--brand-navy-border)',
                 display: 'flex', 
                 alignItems: 'center', 
                 justifyContent: 'center',
-                color: 'var(--brand-navy-mid)'
+                color: 'var(--brand-navy-light)'
               }}>
-                <Database size={16} />
+                <Database size={18} />
               </div>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--text-primary)' }}>
-                MAINFRAME VSAM & FLAT DATASET INSPECTOR
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                Cataloged VSAM & QSAM Datasets
               </h2>
             </div>
-            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '4px' }}>
               {datasets[activeDataset]?.desc}
             </p>
           </div>
 
           {/* Search Box */}
           <div style={{ position: 'relative', width: '280px' }}>
-            <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+            <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               className="form-control"
-              placeholder="Search cataloged records..."
+              placeholder="Filter catalog records..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               style={{ paddingLeft: '34px', fontSize: '12px', height: '36px' }}
@@ -105,7 +106,7 @@ export default function DatabaseView({ accounts, transactions, processed, except
       </div>
 
       {/* Dataset Tabs */}
-      <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', gap: '10px', marginBottom: '16px', overflowX: 'auto' }}>
         {Object.entries(datasets).map(([key, ds]) => {
           const isActive = activeDataset === key;
           return (
@@ -116,31 +117,31 @@ export default function DatabaseView({ accounts, transactions, processed, except
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '9px 14px',
-                borderRadius: 'var(--radius-sm)',
+                padding: '9px 16px',
+                borderRadius: '10px',
                 cursor: 'pointer',
                 background: isActive ? 'var(--brand-navy-pale)' : 'var(--bg-card)',
-                border: isActive ? '1px solid var(--border-default)' : '1px solid var(--border-hairline)',
-                color: isActive ? 'var(--brand-navy-mid)' : 'var(--text-secondary)',
-                fontWeight: isActive ? 700 : 600,
+                border: isActive ? '1px solid var(--brand-navy-border)' : '1px solid var(--border-subtle)',
+                color: isActive ? 'var(--brand-navy-light)' : 'var(--text-secondary)',
+                fontWeight: isActive ? 700 : 500,
                 fontSize: '12px',
                 fontFamily: 'var(--font-ui)',
                 whiteSpace: 'nowrap',
                 transition: 'all var(--transition-fast)',
-                boxShadow: isActive ? 'var(--shadow-xs)' : 'none'
+                boxShadow: isActive ? '0 1px 3px rgba(37, 99, 235, 0.08)' : '0 1px 2px rgba(15, 23, 42, 0.03)'
               }}
             >
               <span>{ds.label}</span>
               <span style={{
                 fontSize: '10px',
                 fontWeight: 700,
-                padding: '1px 7px',
+                padding: '1px 8px',
                 borderRadius: 'var(--radius-full)',
                 background: isActive ? 'var(--bg-card)' : 'var(--bg-tertiary)',
-                color: isActive ? 'var(--brand-navy-mid)' : 'var(--text-muted)',
-                border: '1px solid var(--border-hairline)'
+                color: isActive ? 'var(--brand-navy-light)' : 'var(--text-muted)',
+                border: '1px solid var(--border-subtle)'
               }}>
-                {ds.data.length}
+                {ds.data.length.toLocaleString()}
               </span>
             </button>
           );
@@ -148,20 +149,20 @@ export default function DatabaseView({ accounts, transactions, processed, except
       </div>
 
       {/* Data Table */}
-      <div className="glass-panel" style={{ borderRadius: 'var(--radius-md)', overflow: 'hidden' }}>
+      <div className="glass-panel" style={{ borderRadius: '14px', overflow: 'hidden' }}>
         {filteredData.length === 0 ? (
-          <div style={{ padding: '36px', textAlign: 'center' }}>
-            <HardDrive size={32} color="var(--text-muted)" style={{ marginBottom: '8px' }} />
-            <p style={{ color: 'var(--text-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
-              {searchTerm ? 'NO RECORDS MATCH THE SEARCH QUERY.' : 'CATALOGED DATASET IS EMPTY — ZERO LOGICAL RECORDS ALLOCATED.'}
+          <div style={{ padding: '40px', textAlign: 'center' }}>
+            <HardDrive size={36} color="var(--text-muted)" style={{ marginBottom: '10px' }} />
+            <p style={{ color: 'var(--text-muted)', fontSize: '13px' }}>
+              {searchTerm ? 'No records match the search filter.' : 'Cataloged dataset is empty.'}
             </p>
           </div>
         ) : (
           <div style={{ overflowX: 'auto' }}>
-            <table className="data-table">
+            <table className="table-modern">
               <thead>
                 <tr>
-                  <th style={{ width: '50px' }}>#</th>
+                  <th style={{ width: '55px' }}>#</th>
                   {columns.map(col => (
                     <th key={col}>{col.replace(/([A-Z])/g, ' $1').toUpperCase()}</th>
                   ))}
@@ -170,11 +171,11 @@ export default function DatabaseView({ accounts, transactions, processed, except
               <tbody>
                 {pageData.map((row, idx) => (
                   <tr key={startIndex + idx}>
-                    <td style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
+                    <td style={{ color: 'var(--text-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
                       {String(startIndex + idx + 1).padStart(5, '0')}
                     </td>
                     {columns.map(col => (
-                      <td key={col} style={{ fontFamily: 'var(--font-mono)' }}>
+                      <td key={col} style={{ fontFamily: typeof row[col] === 'number' || col.toLowerCase().includes('id') ? 'var(--font-mono)' : 'var(--font-ui)', fontSize: '12px' }}>
                         {formatValue(col, row[col])}
                       </td>
                     ))}
@@ -188,94 +189,60 @@ export default function DatabaseView({ accounts, transactions, processed, except
 
       {/* Pagination Bar */}
       <div style={{
-        marginTop: '10px',
+        marginTop: '16px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '12px',
-        fontSize: '11px',
-        fontFamily: 'var(--font-mono)'
+        fontSize: '12px'
       }}>
-        <div style={{ color: 'var(--text-muted)', fontSize: '10px' }}>
-          <span>CATALOG: {datasets[activeDataset]?.label} | LRECL=80 BLKSIZE=3120 RECFM=FB</span>
-          <span style={{ marginLeft: '12px' }}>
-            RECORDS {filteredData.length > 0 ? startIndex + 1 : 0}-{endIndex} OF {filteredData.length}
-          </span>
+        <div style={{ color: 'var(--text-muted)' }}>
+          Showing records {startIndex + 1}–{endIndex} of {filteredData.length.toLocaleString()}
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            <span style={{ color: 'var(--text-muted)', fontSize: '10px' }}>ROWS/PAGE:</span>
-            <select
-              value={pageSize}
-              onChange={(e) => setPageSize(e.target.value === 'ALL' ? 'ALL' : Number(e.target.value))}
-              style={{
-                background: 'var(--bg-primary)',
-                border: '1px solid var(--border-subtle)',
-                color: 'var(--text-primary)',
-                fontFamily: 'var(--font-mono)',
-                fontSize: '10px',
-                padding: '3px 6px',
-                borderRadius: 'var(--radius-sm)'
-              }}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage <= 1}
+              onClick={() => setPage(1)}
+              style={{ padding: '6px 10px' }}
             >
-              <option value={25}>25</option>
-              <option value={50}>50</option>
-              <option value={100}>100</option>
-              <option value={250}>250</option>
-              <option value={500}>500</option>
-              <option value="ALL">ALL</option>
-            </select>
+              <ChevronsLeft size={14} />
+            </button>
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage <= 1}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              style={{ padding: '6px 12px' }}
+            >
+              <ChevronLeft size={14} />
+              <span>Previous</span>
+            </button>
+
+            <span style={{ color: 'var(--brand-navy-light)', fontWeight: 700, padding: '0 8px' }}>
+              Page {currentPage} of {totalPages}
+            </span>
+
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              style={{ padding: '6px 12px' }}
+            >
+              <span>Next</span>
+              <ChevronRight size={14} />
+            </button>
+            <button
+              className="btn btn-secondary"
+              disabled={currentPage >= totalPages}
+              onClick={() => setPage(totalPages)}
+              style={{ padding: '6px 10px' }}
+            >
+              <ChevronsRight size={14} />
+            </button>
           </div>
-
-          {pageSize !== 'ALL' && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-              <button
-                className="btn btn-secondary"
-                disabled={currentPage <= 1}
-                onClick={() => setPage(1)}
-                title="First Page"
-                style={{ padding: '4px 6px', fontSize: '10px' }}
-              >
-                <ChevronsLeft size={12} />
-              </button>
-              <button
-                className="btn btn-secondary"
-                disabled={currentPage <= 1}
-                onClick={() => setPage(p => Math.max(1, p - 1))}
-                title="Previous Page"
-                style={{ padding: '4px 8px', fontSize: '10px' }}
-              >
-                <ChevronLeft size={12} />
-                <span>PREV</span>
-              </button>
-
-              <span style={{ padding: '0 6px', color: 'var(--matrix-green)', fontWeight: 700, fontSize: '10px' }}>
-                PAGE {currentPage} / {totalPages}
-              </span>
-
-              <button
-                className="btn btn-secondary"
-                disabled={currentPage >= totalPages}
-                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                title="Next Page"
-                style={{ padding: '4px 8px', fontSize: '10px' }}
-              >
-                <span>NEXT</span>
-                <ChevronRight size={12} />
-              </button>
-              <button
-                className="btn btn-secondary"
-                disabled={currentPage >= totalPages}
-                onClick={() => setPage(totalPages)}
-                title="Last Page"
-                style={{ padding: '4px 6px', fontSize: '10px' }}
-              >
-                <ChevronsRight size={12} />
-              </button>
-            </div>
-          )}
         </div>
       </div>
 

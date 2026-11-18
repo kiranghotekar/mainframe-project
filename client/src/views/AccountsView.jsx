@@ -76,7 +76,7 @@ export default function AccountsView({
   const displayedAccounts = filteredAccounts.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <div style={{ padding: '24px 28px' }}>
+    <div style={{ padding: '26px 30px' }}>
       
       {/* Header Bar */}
       <div style={{
@@ -85,57 +85,67 @@ export default function AccountsView({
         alignItems: 'center',
         flexWrap: 'wrap',
         gap: '16px',
-        marginBottom: '20px'
+        marginBottom: '22px'
       }}>
         <div>
-          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)' }}>
+          <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '19px', fontWeight: 800, color: 'var(--text-primary)' }}>
             Customer Master Ledgers (VSAM KSDS)
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '12px', marginTop: '2px' }}>
-            Browse and manage all {accounts.length.toLocaleString()} active customer accounts with posted ledger balances.
+          <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginTop: '2px' }}>
+            Browse and manage all {accounts.length.toLocaleString()} active customer accounts with real-time posted balances
           </p>
         </div>
 
         {/* Filter Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* Account Type Selector */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '4px', background: 'var(--bg-card)', padding: '3px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-default)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          
+          {/* Segmented Account Type Selector */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            background: 'var(--bg-tertiary)', 
+            padding: '3px', 
+            borderRadius: '10px', 
+            border: '1px solid var(--border-subtle)' 
+          }}>
             {['ALL', 'SAVINGS', 'CURRENT'].map(t => (
               <button
                 key={t}
                 onClick={() => setTypeFilter(t)}
                 style={{
-                  padding: '5px 10px',
-                  borderRadius: 'var(--radius-xs)',
+                  padding: '6px 12px',
+                  borderRadius: '8px',
                   border: 'none',
-                  background: typeFilter === t ? 'var(--brand-navy-mid)' : 'transparent',
-                  color: typeFilter === t ? '#FFFFFF' : 'var(--text-secondary)',
-                  fontSize: '11px',
-                  fontWeight: 600,
-                  cursor: 'pointer'
+                  background: typeFilter === t ? 'var(--bg-card)' : 'transparent',
+                  color: typeFilter === t ? 'var(--brand-navy-light)' : 'var(--text-secondary)',
+                  fontSize: '12px',
+                  fontWeight: typeFilter === t ? 700 : 500,
+                  cursor: 'pointer',
+                  boxShadow: typeFilter === t ? '0 1px 3px rgba(15, 23, 42, 0.08)' : 'none',
+                  transition: 'all var(--transition-fast)'
                 }}
               >
-                {t}
+                {t === 'ALL' ? 'All Accounts' : t === 'SAVINGS' ? 'Savings' : 'Current'}
               </button>
             ))}
           </div>
 
           {/* Search Box */}
-          <div style={{ position: 'relative', width: '240px' }}>
-            <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <div style={{ position: 'relative', width: '260px' }}>
+            <Search size={15} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               className="form-control"
-              placeholder="Search account ID or name..."
+              placeholder="Search by ID or customer name..."
               value={filterQuery}
               onChange={(e) => setFilterQuery(e.target.value)}
-              style={{ paddingLeft: '32px', fontSize: '12px', height: '34px' }}
+              style={{ paddingLeft: '34px', fontSize: '12px', height: '36px' }}
             />
           </div>
         </div>
       </div>
 
       {/* Account Cards Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '14px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '16px' }}>
         {displayedAccounts.map(acc => {
           const stagedCount = txnCounts.get(acc.id) || 0;
           const clearedCount = procCounts.get(acc.id) || 0;
@@ -151,16 +161,16 @@ export default function AccountsView({
                   <div style={{
                     width: '38px',
                     height: '38px',
-                    borderRadius: 'var(--radius-full)',
+                    borderRadius: '50%',
                     background: 'var(--brand-navy-pale)',
-                    color: 'var(--brand-navy-mid)',
+                    color: 'var(--brand-navy-light)',
                     fontWeight: 700,
                     fontSize: '13px',
                     fontFamily: 'var(--font-display)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    border: '1px solid rgba(30, 58, 138, 0.15)'
+                    border: '1px solid var(--brand-navy-border)'
                   }}>
                     {initials || 'AC'}
                   </div>
@@ -183,7 +193,7 @@ export default function AccountsView({
                 </div>
 
                 <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.35rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
                     {formatCurrency(acc.balance)}
                   </div>
                   <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>
@@ -197,10 +207,10 @@ export default function AccountsView({
                 display: 'grid',
                 gridTemplateColumns: '1fr 1fr 1fr',
                 gap: '4px',
-                padding: '8px 10px',
-                background: 'var(--bg-tertiary)',
-                border: '1px solid var(--border-hairline)',
-                borderRadius: 'var(--radius-sm)',
+                padding: '8px 12px',
+                background: 'var(--bg-primary)',
+                border: '1px solid var(--border-subtle)',
+                borderRadius: '10px',
                 marginBottom: '14px'
               }}>
                 <div style={{ textAlign: 'center' }}>
@@ -211,7 +221,7 @@ export default function AccountsView({
                 </div>
                 <div style={{ textAlign: 'center', borderLeft: '1px solid var(--border-subtle)', borderRight: '1px solid var(--border-subtle)' }}>
                   <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>CLEARED</div>
-                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, color: 'var(--brand-teal)' }}>
+                  <div style={{ fontFamily: 'var(--font-display)', fontSize: '13px', fontWeight: 700, color: 'var(--emerald-success)' }}>
                     {clearedCount}
                   </div>
                 </div>
@@ -251,7 +261,7 @@ export default function AccountsView({
       {/* Pagination Bar */}
       {totalPages > 1 && (
         <div style={{
-          marginTop: '20px',
+          marginTop: '24px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -283,7 +293,7 @@ export default function AccountsView({
               <span>Previous</span>
             </button>
 
-            <span style={{ color: 'var(--brand-navy-mid)', fontWeight: 700, padding: '0 8px' }}>
+            <span style={{ color: 'var(--brand-navy-light)', fontWeight: 700, padding: '0 10px' }}>
               Page {currentPage} of {totalPages}
             </span>
 

@@ -1,50 +1,57 @@
 import React, { useMemo } from 'react';
 import { 
   CreditCard, 
-  TrendingUp, 
-  ArrowUpRight, 
   ArrowDownLeft, 
+  ArrowUpRight, 
   Play, 
-  Sparkles, 
-  ShieldCheck, 
+  RotateCcw, 
   Clock, 
-  ChevronRight, 
+  ShieldCheck, 
+  AlertTriangle, 
+  Sparkles, 
   Activity, 
-  CheckCircle2, 
-  AlertCircle 
+  TrendingUp, 
+  TrendingDown,
+  Layers,
+  ChevronRight,
+  Database,
+  CheckCircle2
 } from 'lucide-react';
 
-export default function BankingView({ 
-  accounts, 
-  transactions, 
-  processed, 
-  exceptions, 
-  onQuickTxn, 
-  onRunBatch, 
+export default function BankingView({
+  accounts,
+  transactions,
+  processed,
+  exceptions,
+  onQuickTxn,
+  onRunBatch,
   onOpenTxnModal,
   onNavigateTab,
   onGenerate10k,
-  isProcessing 
+  isProcessing
 }) {
-  const totalBalance = useMemo(() => {
-    return accounts.reduce((sum, a) => sum + (Number(a.balance) || 0), 0);
-  }, [accounts]);
-
-  const avgBalance = accounts.length ? (totalBalance / accounts.length) : 0;
-
-  const pendingCredits = useMemo(() => {
-    return transactions.filter(t => t.type === 'CREDIT').reduce((s, t) => s + (Number(t.amount) || 0), 0);
-  }, [transactions]);
-
-  const pendingDebits = useMemo(() => {
-    return transactions.filter(t => t.type === 'DEBIT').reduce((s, t) => s + (Number(t.amount) || 0), 0);
-  }, [transactions]);
-
   const formatCurrency = (val) => {
     return '₹' + Number(val || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-  // Top 6 featured accounts for the dashboard preview
+  // Liquidity aggregations
+  const totalBalance = useMemo(() => {
+    return accounts.reduce((acc, a) => acc + (Number(a.balance) || 0), 0);
+  }, [accounts]);
+
+  const avgBalance = useMemo(() => {
+    return accounts.length ? totalBalance / accounts.length : 0;
+  }, [accounts, totalBalance]);
+
+  const pendingCredits = useMemo(() => {
+    return transactions.filter(t => t.type === 'CREDIT').reduce((acc, t) => acc + Number(t.amount || 0), 0);
+  }, [transactions]);
+
+  const pendingDebits = useMemo(() => {
+    return transactions.filter(t => t.type === 'DEBIT').reduce((acc, t) => acc + Number(t.amount || 0), 0);
+  }, [transactions]);
+
+  // Featured Accounts: Top 6 accounts for quick customer service
   const featuredAccounts = useMemo(() => {
     return accounts.slice(0, 6);
   }, [accounts]);
@@ -62,91 +69,100 @@ export default function BankingView({
   }, [transactions, processed]);
 
   return (
-    <div style={{ padding: '24px 28px' }}>
+    <div style={{ padding: '26px 30px' }}>
 
       {/* Hero Banner: Institutional Net Worth */}
-      <div className="balance-hero-banner" style={{ marginBottom: '24px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '20px' }}>
+      <div className="balance-hero-banner" style={{ marginBottom: '26px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '22px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
               <span style={{ 
                 background: 'rgba(255, 255, 255, 0.16)', 
+                backdropFilter: 'blur(8px)',
                 padding: '4px 12px', 
                 borderRadius: 'var(--radius-full)', 
                 fontSize: '11px', 
                 fontWeight: 700, 
-                letterSpacing: '0.04em' 
+                letterSpacing: '0.04em',
+                border: '1px solid rgba(255, 255, 255, 0.22)'
               }}>
                 🏦 CORE SYSTEM LEDGER
               </span>
-              <span style={{ fontSize: '12px', opacity: 0.85 }}>VSAM KSDS Cluster Active</span>
+              <span style={{ fontSize: '12px', opacity: 0.9 }}>VSAM KSDS Cluster Active</span>
             </div>
-            <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.75, fontWeight: 600 }}>
+            <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.8, fontWeight: 700 }}>
               TOTAL POSTED SYSTEM LIQUIDITY
             </div>
             <div style={{ 
               fontFamily: 'var(--font-display)', 
-              fontSize: '2.6rem', 
+              fontSize: '2.8rem', 
               fontWeight: 800, 
               letterSpacing: '-0.02em', 
-              marginTop: '4px' 
+              marginTop: '4px',
+              textShadow: '0 2px 10px rgba(0, 0, 0, 0.2)'
             }}>
               {formatCurrency(totalBalance)}
             </div>
-            <div style={{ fontSize: '12px', opacity: 0.8, marginTop: '4px' }}>
+            <div style={{ fontSize: '12px', opacity: 0.85, marginTop: '6px' }}>
               Across {accounts.length.toLocaleString()} customer accounts • Avg balance: {formatCurrency(avgBalance)}
             </div>
           </div>
 
-          {/* Quick Overview Cards */}
+          {/* Quick Overview Cards with faint positive highlights */}
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
             <div style={{
-              background: 'rgba(255, 255, 255, 0.10)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
-              borderRadius: 'var(--radius-md)',
-              padding: '12px 18px',
-              minWidth: '150px',
-              backdropFilter: 'blur(6px)'
+              background: 'rgba(16, 185, 129, 0.14)',
+              border: '1px solid rgba(16, 185, 129, 0.32)',
+              borderRadius: '14px',
+              padding: '14px 18px',
+              minWidth: '155px',
+              backdropFilter: 'blur(10px)'
             }}>
-              <div style={{ fontSize: '10px', opacity: 0.75, textTransform: 'uppercase', fontWeight: 600 }}>STAGED INFLOW (CR)</div>
-              <div style={{ fontSize: '17px', fontWeight: 800, color: '#6EE7B7', fontFamily: 'var(--font-display)', marginTop: '2px' }}>
+              <div style={{ fontSize: '10px', opacity: 0.9, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
+                STAGED INFLOW (CR)
+              </div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#34D399', fontFamily: 'var(--font-display)', marginTop: '3px' }}>
                 +{formatCurrency(pendingCredits)}
               </div>
-              <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '2px' }}>
-                {transactions.filter(t => t.type === 'CREDIT').length} deposit requests
+              <div style={{ fontSize: '11px', opacity: 0.85, marginTop: '2px' }}>
+                {transactions.filter(t => t.type === 'CREDIT').length} deposit batches
               </div>
             </div>
 
             <div style={{
-              background: 'rgba(255, 255, 255, 0.10)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
-              borderRadius: 'var(--radius-md)',
-              padding: '12px 18px',
-              minWidth: '150px',
-              backdropFilter: 'blur(6px)'
+              background: 'rgba(244, 63, 94, 0.14)',
+              border: '1px solid rgba(244, 63, 94, 0.32)',
+              borderRadius: '14px',
+              padding: '14px 18px',
+              minWidth: '155px',
+              backdropFilter: 'blur(10px)'
             }}>
-              <div style={{ fontSize: '10px', opacity: 0.75, textTransform: 'uppercase', fontWeight: 600 }}>STAGED OUTFLOW (DR)</div>
-              <div style={{ fontSize: '17px', fontWeight: 800, color: '#FCA5A5', fontFamily: 'var(--font-display)', marginTop: '2px' }}>
+              <div style={{ fontSize: '10px', opacity: 0.9, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
+                STAGED OUTFLOW (DR)
+              </div>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#F87171', fontFamily: 'var(--font-display)', marginTop: '3px' }}>
                 -{formatCurrency(pendingDebits)}
               </div>
-              <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '2px' }}>
-                {transactions.filter(t => t.type === 'DEBIT').length} withdrawal requests
+              <div style={{ fontSize: '11px', opacity: 0.85, marginTop: '2px' }}>
+                {transactions.filter(t => t.type === 'DEBIT').length} withdrawal batches
               </div>
             </div>
 
             <div style={{
-              background: 'rgba(255, 255, 255, 0.10)',
-              border: '1px solid rgba(255, 255, 255, 0.18)',
-              borderRadius: 'var(--radius-md)',
-              padding: '12px 18px',
-              minWidth: '130px',
-              backdropFilter: 'blur(6px)'
+              background: 'rgba(245, 158, 11, 0.14)',
+              border: '1px solid rgba(245, 158, 11, 0.32)',
+              borderRadius: '14px',
+              padding: '14px 18px',
+              minWidth: '140px',
+              backdropFilter: 'blur(10px)'
             }}>
-              <div style={{ fontSize: '10px', opacity: 0.75, textTransform: 'uppercase', fontWeight: 600 }}>SUSPENSE REJECTS</div>
-              <div style={{ fontSize: '17px', fontWeight: 800, color: '#FDE047', fontFamily: 'var(--font-display)', marginTop: '2px' }}>
-                {exceptions.length} REJECTED
+              <div style={{ fontSize: '10px', opacity: 0.9, textTransform: 'uppercase', fontWeight: 700, letterSpacing: '0.04em' }}>
+                SUSPENSE REJECTS
               </div>
-              <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '2px' }}>
+              <div style={{ fontSize: '18px', fontWeight: 800, color: '#FDE047', fontFamily: 'var(--font-display)', marginTop: '3px' }}>
+                {exceptions.length} REJECTS
+              </div>
+              <div style={{ fontSize: '11px', opacity: 0.85, marginTop: '2px' }}>
                 Overdraft protection active
               </div>
             </div>
@@ -155,20 +171,20 @@ export default function BankingView({
       </div>
 
       {/* Main 2-Column Dashboard Grid */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.65fr) minmax(320px, 1fr)', gap: '22px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1.65fr) minmax(320px, 1fr)', gap: '24px' }}>
 
         {/* LEFT COLUMN: Featured Customer Accounts & Quick Operations */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
           {/* Section: Featured Accounts */}
-          <div className="glass-panel" style={{ padding: '20px', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+          <div className="glass-panel" style={{ padding: '22px', borderRadius: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
               <div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
                   Customer Master Accounts
                 </h3>
-                <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                  Frequently accessed core banking customer ledgers
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  Frequently accessed core banking customer ledgers with one-click transfer actions
                 </p>
               </div>
               
@@ -183,63 +199,65 @@ export default function BankingView({
             </div>
 
             {/* Grid of 6 Featured Accounts */}
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
               {featuredAccounts.map(acc => {
                 const initials = acc.name.split(' ').map(n => n[0]).slice(0, 2).join('');
                 return (
                   <div 
                     key={acc.id} 
                     style={{
-                      background: 'var(--bg-tertiary)',
-                      border: '1px solid var(--border-hairline)',
-                      borderRadius: 'var(--radius-md)',
+                      background: 'var(--bg-primary)',
+                      border: '1px solid var(--border-subtle)',
+                      borderRadius: '12px',
                       padding: '14px',
                       display: 'flex',
                       flexDirection: 'column',
                       justifyContent: 'space-between',
-                      transition: 'all var(--transition-fast)'
+                      transition: 'all var(--transition-fast)',
+                      boxShadow: '0 1px 2px rgba(15, 23, 42, 0.03)'
                     }}
                   >
                     <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                           <div style={{
-                            width: '32px',
-                            height: '32px',
+                            width: '34px',
+                            height: '34px',
                             borderRadius: '50%',
                             background: 'var(--brand-navy-pale)',
-                            color: 'var(--brand-navy-mid)',
+                            color: 'var(--brand-navy-light)',
                             fontWeight: 700,
                             fontSize: '12px',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            fontFamily: 'var(--font-display)'
+                            fontFamily: 'var(--font-display)',
+                            border: '1px solid var(--brand-navy-border)'
                           }}>
                             {initials}
                           </div>
                           <div>
                             <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)' }}>{acc.name}</div>
-                            <div style={{ fontSize: '10px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>ACCT-{acc.id}</div>
+                            <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>ACCT-{acc.id}</div>
                           </div>
                         </div>
-                        <span className="badge badge-success" style={{ fontSize: '9px', padding: '1px 5px' }}>
+                        <span className="badge badge-blue" style={{ fontSize: '9px', padding: '2px 7px' }}>
                           {acc.type}
                         </span>
                       </div>
 
-                      <div style={{ marginTop: '8px', marginBottom: '10px' }}>
-                        <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>POSTED BALANCE</div>
-                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '1px' }}>
+                      <div style={{ marginTop: '10px', marginBottom: '12px' }}>
+                        <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>POSTED BALANCE</div>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '18px', fontWeight: 800, color: 'var(--text-primary)', marginTop: '2px' }}>
                           {formatCurrency(acc.balance)}
                         </div>
                       </div>
                     </div>
 
-                    <div style={{ display: 'flex', gap: '6px', paddingTop: '8px', borderTop: '1px solid var(--border-subtle)' }}>
+                    <div style={{ display: 'flex', gap: '6px', paddingTop: '10px', borderTop: '1px solid var(--border-subtle)' }}>
                       <button
                         className="btn btn-credit-action"
-                        style={{ flex: 1, padding: '6px', fontSize: '11px' }}
+                        style={{ flex: 1, padding: '6px 8px', fontSize: '11px' }}
                         onClick={() => onQuickTxn(acc.id, 'CREDIT')}
                       >
                         <ArrowDownLeft size={12} />
@@ -247,7 +265,7 @@ export default function BankingView({
                       </button>
                       <button
                         className="btn btn-debit-action"
-                        style={{ flex: 1, padding: '6px', fontSize: '11px' }}
+                        style={{ flex: 1, padding: '6px 8px', fontSize: '11px' }}
                         onClick={() => onQuickTxn(acc.id, 'DEBIT')}
                       >
                         <ArrowUpRight size={12} />
@@ -261,14 +279,14 @@ export default function BankingView({
           </div>
 
           {/* Section: Live Activity / Transaction Feed */}
-          <div className="glass-panel" style={{ padding: '20px', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+          <div className="glass-panel" style={{ padding: '22px', borderRadius: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
               <div>
-                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
                   Transaction Queue & Activity
                 </h3>
-                <p style={{ fontSize: '11px', color: 'var(--text-muted)', marginTop: '2px' }}>
-                  Staged sequential records awaiting overnight batch settlement
+                <p style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                  Live sequential records awaiting overnight batch settlement
                 </p>
               </div>
 
@@ -287,7 +305,7 @@ export default function BankingView({
                 No pending or processed transactions recorded yet.
               </div>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {recentActivity.map((txn, idx) => (
                   <div
                     key={txn.id || idx}
@@ -295,19 +313,21 @@ export default function BankingView({
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'space-between',
-                      padding: '10px 14px',
-                      background: 'var(--bg-tertiary)',
-                      borderRadius: 'var(--radius-sm)',
-                      border: '1px solid var(--border-hairline)'
+                      padding: '11px 16px',
+                      background: 'var(--bg-primary)',
+                      borderRadius: '10px',
+                      border: '1px solid var(--border-subtle)',
+                      transition: 'all var(--transition-fast)'
                     }}
                   >
                     <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                       <div style={{
-                        width: '32px',
-                        height: '32px',
-                        borderRadius: 'var(--radius-sm)',
+                        width: '34px',
+                        height: '34px',
+                        borderRadius: '9px',
                         background: txn.type === 'CREDIT' ? 'var(--brand-teal-light)' : 'var(--brand-coral-light)',
                         color: txn.type === 'CREDIT' ? 'var(--brand-teal-dark)' : 'var(--brand-coral-dark)',
+                        border: `1px solid ${txn.type === 'CREDIT' ? 'var(--brand-teal-border)' : 'var(--brand-coral-border)'}`,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center'
@@ -329,12 +349,12 @@ export default function BankingView({
                         fontFamily: 'var(--font-display)', 
                         fontSize: '14px', 
                         fontWeight: 800,
-                        color: txn.type === 'CREDIT' ? 'var(--brand-teal)' : 'var(--brand-coral)'
+                        color: txn.type === 'CREDIT' ? 'var(--emerald-success)' : 'var(--crimson-danger)'
                       }}>
                         {txn.type === 'CREDIT' ? '+' : '-'}{formatCurrency(txn.amount)}
                       </div>
-                      <span className={`badge ${txn.isPending ? 'badge-warning' : 'badge-success'}`} style={{ fontSize: '9px', padding: '1px 6px' }}>
-                        {txn.isPending ? 'PENDING BATCH' : 'CLEARED'}
+                      <span className={`badge ${txn.isPending ? 'badge-warning' : 'badge-success'}`} style={{ fontSize: '9px', padding: '2px 7px', marginTop: '2px' }}>
+                        {txn.isPending ? 'PENDING BATCH' : 'CLEARED & POSTED'}
                       </span>
                     </div>
                   </div>
@@ -346,38 +366,38 @@ export default function BankingView({
         </div>
 
         {/* RIGHT COLUMN: Batch Clearing Control Hub & System Telemetry */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
 
           {/* Batch Clearing Operations Card */}
           <div className="glass-panel" style={{ 
-            padding: '22px', 
-            borderRadius: 'var(--radius-lg)',
-            borderTop: '4px solid var(--brand-navy-mid)'
+            padding: '24px', 
+            borderRadius: '16px',
+            borderTop: '4px solid var(--brand-navy-light)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-              <Clock size={16} color="var(--brand-navy-mid)" />
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 800, color: 'var(--text-primary)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+              <Clock size={18} color="var(--brand-navy-light)" />
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
                 Overnight Batch Clearing Center
               </h3>
             </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-secondary)', marginBottom: '16px', lineHeight: 1.5 }}>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '18px', lineHeight: 1.5 }}>
               Executes JCL Job <code>//BATCHJOB</code> with COBOL <code>TRANPROC</code>. Reads staged QSAM records and posts balances to the VSAM Master.
             </p>
 
             <div style={{
-              background: 'var(--bg-tertiary)',
-              border: '1px solid var(--border-default)',
-              borderRadius: 'var(--radius-md)',
+              background: 'var(--bg-primary)',
+              border: '1px solid var(--border-subtle)',
+              borderRadius: '12px',
               padding: '14px',
-              marginBottom: '16px'
+              marginBottom: '18px'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>Staged Transaction Queue:</span>
-                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--brand-navy-mid)' }}>
+                <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 800, color: 'var(--brand-navy-light)' }}>
                   {transactions.length.toLocaleString()} records
                 </span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                 <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>Net Settlement Spread:</span>
                 <span style={{ fontFamily: 'var(--font-display)', fontWeight: 700, color: 'var(--text-primary)' }}>
                   {formatCurrency(pendingCredits - pendingDebits)}
@@ -394,8 +414,8 @@ export default function BankingView({
                 padding: '12px 18px',
                 fontSize: '13px',
                 fontWeight: 700,
-                boxShadow: '0 4px 14px rgba(30, 58, 138, 0.25)',
-                marginBottom: '10px'
+                borderRadius: '10px',
+                marginBottom: '12px'
               }}
             >
               <Play size={14} fill="currentColor" />
@@ -406,14 +426,14 @@ export default function BankingView({
               <button
                 className="btn btn-secondary"
                 onClick={onOpenTxnModal}
-                style={{ flex: 1, fontSize: '11px', padding: '8px' }}
+                style={{ flex: 1, fontSize: '12px', padding: '8px' }}
               >
                 + Stage Transfer
               </button>
               <button
                 className="btn btn-secondary"
                 onClick={() => onNavigateTab && onNavigateTab('spool')}
-                style={{ flex: 1, fontSize: '11px', padding: '8px' }}
+                style={{ flex: 1, fontSize: '12px', padding: '8px' }}
               >
                 Inspect Spool
               </button>
@@ -422,56 +442,68 @@ export default function BankingView({
 
           {/* 10,000 Transaction Simulator Card */}
           <div className="glass-panel" style={{ 
-            padding: '20px', 
-            borderRadius: 'var(--radius-lg)',
+            padding: '22px', 
+            borderRadius: '16px',
             background: 'var(--brand-gold-bg)',
-            border: '1px solid rgba(201, 147, 58, 0.3)'
+            border: '1px solid var(--brand-gold-border)',
+            boxShadow: '0 2px 8px rgba(217, 119, 6, 0.08)'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
               <Sparkles size={16} color="var(--brand-gold)" />
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '14px', fontWeight: 800, color: 'var(--brand-gold)' }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 800, color: 'var(--brand-gold)' }}>
                 10K Transaction Stress Simulator
               </h3>
             </div>
-            <p style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '14px' }}>
+            <p style={{ fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '16px' }}>
               Load an institutional volume dataset with 500 accounts and 10,000 realistic transactions with paise fractions and overdraft scenarios.
             </p>
             <button
-              className="btn btn-gold"
               onClick={onGenerate10k}
               disabled={isProcessing}
-              style={{ width: '100%', fontSize: '12px', padding: '10px' }}
+              style={{ 
+                width: '100%', 
+                fontSize: '12px', 
+                padding: '10px',
+                background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+                color: '#FFFFFF',
+                border: 'none',
+                borderRadius: '10px',
+                fontWeight: 700,
+                cursor: isProcessing ? 'not-allowed' : 'pointer',
+                boxShadow: '0 2px 6px rgba(217, 119, 6, 0.25)',
+                transition: 'all var(--transition-fast)'
+              }}
             >
-              {isProcessing ? 'Generating 10,000 Rows...' : 'Generate 10K Row Dataset'}
+              {isProcessing ? 'Generating 10,000 Rows...' : '⚡ Generate 10K Row Dataset'}
             </button>
           </div>
 
           {/* System Telemetry Specs Card */}
-          <div className="glass-panel" style={{ padding: '18px', borderRadius: 'var(--radius-lg)' }}>
-            <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>
-              System Specifications & Audit
+          <div className="glass-panel" style={{ padding: '20px', borderRadius: '16px' }}>
+            <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '14px' }}>
+              System Specifications & Telemetry
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '12px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid var(--border-hairline)' }}>
-                <span style={{ color: 'var(--text-muted)' }}>Mainframe OS</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--border-hairline)' }}>
+                <span style={{ color: 'var(--text-muted)' }}>Mainframe Platform</span>
                 <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>IBM z/OS JES2 V2R5</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid var(--border-hairline)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--border-hairline)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Transaction Engine</span>
-                <span style={{ fontWeight: 600, color: 'var(--brand-navy-mid)' }}>COBOL TRANPROC.cbl</span>
+                <span style={{ fontWeight: 600, color: 'var(--brand-navy-light)' }}>COBOL TRANPROC.cbl</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid var(--border-hairline)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--border-hairline)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Master Database</span>
                 <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>VSAM KSDS Indexed</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '6px', borderBottom: '1px solid var(--border-hairline)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '8px', borderBottom: '1px solid var(--border-hairline)' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Math Precision</span>
-                <span style={{ fontWeight: 600, color: 'var(--brand-teal)' }}>Fixed-Point PIC 9(10)V99</span>
+                <span style={{ fontWeight: 600, color: 'var(--emerald-success)' }}>Fixed-Point PIC 9(10)V99</span>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-muted)' }}>Audit Proof Equation</span>
-                <span style={{ fontWeight: 600, color: 'var(--brand-teal)' }}>Balanced (RC=0000)</span>
+                <span style={{ fontWeight: 600, color: 'var(--emerald-success)' }}>Balanced (RC=0000)</span>
               </div>
             </div>
           </div>

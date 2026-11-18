@@ -24,37 +24,37 @@ export default function JesSpoolView({ batchResult, onRunBatch, isProcessing }) 
 
   if (!batchResult) {
     return (
-      <div style={{ padding: '32px 24px', textAlign: 'center' }}>
-        <div className="glass-panel" style={{ maxWidth: '560px', margin: '0 auto', padding: '36px 28px', borderRadius: 'var(--radius-lg)' }}>
+      <div style={{ padding: '40px 30px', textAlign: 'center' }}>
+        <div className="glass-panel" style={{ maxWidth: '560px', margin: '0 auto', padding: '40px 32px', borderRadius: '16px' }}>
           <div style={{
-            width: '48px',
-            height: '48px',
-            borderRadius: 'var(--radius-md)',
-            background: 'var(--matrix-green-bg)',
-            border: '1px solid var(--matrix-green-border)',
+            width: '52px',
+            height: '52px',
+            borderRadius: '50%',
+            background: 'var(--brand-navy-pale)',
+            border: '1px solid var(--brand-navy-border)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            margin: '0 auto 16px'
+            margin: '0 auto 16px',
+            color: 'var(--brand-navy-light)'
           }}>
-            <Terminal size={24} color="var(--matrix-green)" />
+            <Terminal size={26} />
           </div>
-          <h2 style={{ fontSize: '15px', fontWeight: 700, marginBottom: '8px', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            JES2 BATCH JOB CONSOLE // TRANPROC
+          <h2 style={{ fontSize: '16px', fontWeight: 800, marginBottom: '8px', fontFamily: 'var(--font-display)', color: 'var(--text-primary)' }}>
+            JES2 Batch Spool Console
           </h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '11px', fontFamily: 'var(--font-mono)', marginBottom: '24px', lineHeight: 1.6 }}>
-            NO BATCH JOB EXECUTION REGISTERED ON JES2 SPOOL QUEUE.
-            SUBMIT JCL JOB CARD //BATCHJOB TO EXECUTE THE COBOL TRANSACTION ENGINE ACROSS
-            STAGED QSAM RECORDS AND UPDATE VSAM ACCT.MASTER.
+          <p style={{ color: 'var(--text-secondary)', fontSize: '13px', marginBottom: '24px', lineHeight: 1.6 }}>
+            No batch job execution is currently queued in the JES2 spool queue.
+            Submit JCL Job Card //BATCHJOB to execute COBOL TRANPROC across staged QSAM transactions and update the VSAM Master.
           </p>
           <button
             className="btn btn-mainframe"
             onClick={onRunBatch}
             disabled={isProcessing}
-            style={{ fontSize: '11px', padding: '10px 20px' }}
+            style={{ fontSize: '12px', padding: '10px 22px' }}
           >
             <Play size={14} fill="currentColor" />
-            <span>{isProcessing ? 'SUBMITTING TO SPOOL...' : '//BATCHJOB EXEC PGM=TRANPROC'}</span>
+            <span>{isProcessing ? 'Submitting to Spool...' : 'Execute //BATCHJOB EXEC PGM=TRANPROC'}</span>
           </button>
         </div>
       </div>
@@ -91,42 +91,42 @@ export default function JesSpoolView({ batchResult, onRunBatch, isProcessing }) 
   ];
 
   return (
-    <div style={{ padding: '0 24px 24px' }}>
+    <div style={{ padding: '26px 30px' }}>
 
       {/* Job Summary Header */}
-      <div className="glass-panel" style={{ padding: '14px 18px', borderRadius: 'var(--radius-md)', marginBottom: '14px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '14px' }}>
+      <div className="glass-panel" style={{ padding: '18px 22px', borderRadius: '14px', marginBottom: '18px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
-              <Terminal size={16} color="var(--matrix-green)" />
-              <h2 style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 700, letterSpacing: '0.04em' }}>
-                JES2 SPOOL OUTPUT // SYS1.HASPACE
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '3px' }}>
+              <Terminal size={17} color="var(--brand-navy-light)" />
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '16px', fontWeight: 800, color: 'var(--text-primary)' }}>
+                JES2 Spool Output Queue
               </h2>
               <span className={`badge ${summary.rejected > 0 ? 'badge-warning' : 'badge-success'}`}>
                 {summary.rejected > 0 ? 'JOB COMPLETED (RC=0004)' : 'JOB COMPLETED (RC=0000)'}
               </span>
             </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
-              JOBNAME=BATCHJOB | JOBID=JOB04821 | CLASS=A | PRTY=15 | MAXCC={summary?.rejected > 0 ? '0004' : '0000'}
+            <p style={{ color: 'var(--text-muted)', fontSize: '11px', fontFamily: 'var(--font-mono)' }}>
+              JOBNAME=BATCHJOB | CLASS=A | PRTY=15 | MAXCC={summary?.rejected > 0 ? '0004' : '0000'} | SYSTEM=SYS1
             </p>
           </div>
 
-          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>CLEARED</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--matrix-green)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>CLEARED</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--emerald-success)' }}>
                 {summary.processed || 0}
               </div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>SUSPENDED</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: summary.rejected > 0 ? 'var(--crimson-danger)' : 'var(--text-muted)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>SUSPENDED</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 800, color: summary.rejected > 0 ? 'var(--crimson-danger)' : 'var(--text-muted)' }}>
                 {summary.rejected || 0}
               </div>
             </div>
             <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)' }}>TOTAL READ</div>
-              <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+              <div style={{ fontSize: '10px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: 600 }}>TOTAL READ</div>
+              <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-primary)' }}>
                 {summary.total || 0}
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function JesSpoolView({ batchResult, onRunBatch, isProcessing }) 
               className="btn btn-secondary"
               onClick={onRunBatch}
               disabled={isProcessing}
-              style={{ fontSize: '10px', padding: '6px 12px' }}
+              style={{ fontSize: '11px', padding: '8px 14px' }}
             >
               <Play size={12} />
               <span>RE-RUN</span>
@@ -146,51 +146,51 @@ export default function JesSpoolView({ batchResult, onRunBatch, isProcessing }) 
 
       {/* Step Results */}
       {stepResults && stepResults.length > 0 && (
-        <div style={{ marginBottom: '16px' }}>
+        <div style={{ marginBottom: '18px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
-            <Zap size={13} color="var(--matrix-green)" />
-            <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              JCL STEP EXECUTION CODES
+            <Zap size={14} color="var(--brand-navy-light)" />
+            <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>
+              JCL Step Execution Results
             </span>
           </div>
-          <div style={{ display: 'grid', gap: '6px' }}>
+          <div style={{ display: 'grid', gap: '8px' }}>
             {stepResults.map((step, idx) => (
-              <div key={idx} className="glass-panel" style={{ borderRadius: 'var(--radius-sm)', overflow: 'hidden' }}>
+              <div key={idx} className="glass-panel" style={{ borderRadius: '10px', overflow: 'hidden' }}>
                 <div
                   onClick={() => toggleJob(idx)}
                   style={{
                     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                    padding: '10px 14px', cursor: 'pointer',
+                    padding: '12px 16px', cursor: 'pointer',
                     background: step.rc === 0
-                      ? 'rgba(22, 163, 74, 0.04)'
+                      ? 'var(--brand-teal-light)'
                       : step.rc <= 4
-                        ? 'rgba(217, 119, 6, 0.04)'
-                        : 'rgba(220, 38, 38, 0.04)'
+                        ? 'var(--brand-amber-light)'
+                        : 'var(--brand-coral-light)'
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     {step.rc === 0 ? (
-                      <CheckCircle2 size={14} color="var(--matrix-green)" />
+                      <CheckCircle2 size={16} color="var(--emerald-success)" />
                     ) : (
-                      <AlertTriangle size={14} color={step.rc <= 4 ? 'var(--amber-warning)' : 'var(--crimson-danger)'} />
+                      <AlertTriangle size={16} color={step.rc <= 4 ? 'var(--amber-warning)' : 'var(--crimson-danger)'} />
                     )}
-                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '11px', color: 'var(--text-primary)' }}>
+                    <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>
                       STEP: {step.step || step.name || `STEP0${idx + 1}`}
                     </span>
                     <span className={`badge ${step.rc === 0 ? 'badge-success' : step.rc <= 4 ? 'badge-warning' : 'badge-danger'}`}
-                      style={{ fontSize: '9px', padding: '1px 5px' }}>
+                      style={{ fontSize: '10px', padding: '2px 7px' }}>
                       RC={String(step.rc).padStart(4, '0')}
                     </span>
                     {step.program && (
-                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--text-muted)' }}>
+                      <span style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', color: 'var(--text-muted)' }}>
                         PGM={step.program}
                       </span>
                     )}
                   </div>
-                  {expandedJobs[idx] ? <ChevronUp size={14} color="var(--text-muted)" /> : <ChevronDown size={14} color="var(--text-muted)" />}
+                  {expandedJobs[idx] ? <ChevronUp size={16} color="var(--text-muted)" /> : <ChevronDown size={16} color="var(--text-muted)" />}
                 </div>
                 {expandedJobs[idx] && step.output && (
-                  <div className="terminal-screen" style={{ margin: '0 8px 8px 8px', padding: '10px', fontSize: '11px' }}>
+                  <div className="terminal-screen" style={{ margin: '0 8px 8px 8px', padding: '12px', fontSize: '11px', borderRadius: '8px' }}>
                     <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'var(--font-mono)' }}>{step.output}</pre>
                   </div>
                 )}
@@ -202,25 +202,22 @@ export default function JesSpoolView({ batchResult, onRunBatch, isProcessing }) 
 
       {/* JES Spool / SYSOUT Terminal */}
       {jesOutput && (
-        <div style={{ marginBottom: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '6px' }}>
+        <div style={{ marginBottom: '18px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <FileText size={13} color="var(--matrix-green)" />
-              <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-                SYSOUT DD * (IBM 3270 TERMINAL STREAM)
+              <FileText size={14} color="var(--emerald-success)" />
+              <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>
+                SYSOUT DD * (IBM 3270 Terminal Output)
               </span>
             </div>
-            <button className="btn btn-secondary" style={{ fontSize: '9px', padding: '4px 8px' }} onClick={() => copyToClipboard(jesOutput)}>
-              {copied ? <><Check size={11} /> COPIED</> : <><Copy size={11} /> COPY STREAM</>}
+            <button className="btn btn-secondary" style={{ fontSize: '10px', padding: '4px 10px' }} onClick={() => copyToClipboard(jesOutput)}>
+              {copied ? <><Check size={11} color="var(--emerald-success)" /> COPIED</> : <><Copy size={11} /> COPY STREAM</>}
             </button>
           </div>
-          <div ref={terminalRef} className="terminal-screen" style={{ padding: '14px 16px', maxHeight: '380px', overflow: 'auto' }}>
-            <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'var(--font-mono)', fontSize: '11px', lineHeight: 1.6 }}>
+          <div ref={terminalRef} className="terminal-screen" style={{ padding: '16px 18px', maxHeight: '380px', overflow: 'auto', borderRadius: '12px' }}>
+            <pre style={{ whiteSpace: 'pre-wrap', margin: 0, fontFamily: 'var(--font-mono)', fontSize: '11.5px', lineHeight: 1.6, color: 'var(--terminal-green)' }}>
               {jesOutput}
             </pre>
-            <div style={{ marginTop: '8px' }}>
-              <span className="terminal-cursor" />
-            </div>
           </div>
         </div>
       )}
@@ -228,17 +225,17 @@ export default function JesSpoolView({ batchResult, onRunBatch, isProcessing }) 
       {/* SYSLOG */}
       {syslog && syslog.length > 0 && (
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-            <Clock size={13} color="var(--text-muted)" />
-            <span style={{ fontSize: '10px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>
-              z/OS MASTER CONSOLE SYSLOG
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+            <Clock size={14} color="var(--text-muted)" />
+            <span style={{ fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)' }}>
+              z/OS Master Console Log (SYSLOG)
             </span>
           </div>
-          <div className="terminal-screen" style={{ padding: '12px 14px', maxHeight: '200px', overflow: 'auto' }}>
+          <div className="terminal-screen" style={{ padding: '14px 16px', maxHeight: '200px', overflow: 'auto', borderRadius: '12px' }}>
             {syslog.map((entry, i) => (
               <div key={i} style={{ fontFamily: 'var(--font-mono)', fontSize: '11px', marginBottom: '3px' }}>
                 <span style={{ color: 'var(--text-muted)' }}>[{entry.timestamp || 'SYSLOG'}]</span>{' '}
-                <span style={{ color: entry.level === 'ERROR' ? 'var(--crimson-danger)' : entry.level === 'WARN' ? 'var(--amber-warning)' : 'var(--matrix-green)' }}>
+                <span style={{ color: entry.level === 'ERROR' ? 'var(--crimson-danger)' : entry.level === 'WARN' ? 'var(--amber-warning)' : 'var(--emerald-success)' }}>
                   {entry.message}
                 </span>
               </div>
