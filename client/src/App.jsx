@@ -22,9 +22,9 @@ export default function App() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [notification, setNotification] = useState(null);
 
-  // Theme State (Dark / White Theme)
+  // Theme State (Net Banking Light Theme / Midnight Navy Dark Mode)
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('app_theme') || 'dark';
+    return localStorage.getItem('app_theme') || 'light';
   });
 
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function App() {
     setTheme(nextTheme);
     localStorage.setItem('app_theme', nextTheme);
     document.documentElement.setAttribute('data-theme', nextTheme);
-    showToast(`Switched to ${nextTheme === 'light' ? 'White / Light' : 'Matrix Dark'} Theme`, 'info');
+    showToast(`Switched to ${nextTheme === 'light' ? 'Net Banking (Light)' : 'Midnight Navy (Dark)'} Theme`, 'info');
   };
 
   // Modals

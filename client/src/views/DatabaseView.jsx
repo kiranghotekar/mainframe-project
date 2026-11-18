@@ -65,36 +65,47 @@ export default function DatabaseView({ accounts, transactions, processed, except
     <div style={{ padding: '0 24px 24px' }}>
       
       {/* Header & Dataset Overview */}
-      <div className="glass-panel" style={{ padding: '14px 18px', borderRadius: 'var(--radius-md)', marginBottom: '14px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
+      <div className="glass-panel" style={{ padding: '16px 20px', borderRadius: 'var(--radius-lg)', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '14px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <Database size={16} color="var(--matrix-green)" />
-              <h2 style={{ fontFamily: 'var(--font-mono)', fontSize: '13px', fontWeight: 700, letterSpacing: '0.04em' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ 
+                width: '32px', 
+                height: '32px', 
+                borderRadius: 'var(--radius-sm)', 
+                background: 'var(--brand-navy-pale)', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                color: 'var(--brand-navy-mid)'
+              }}>
+                <Database size={16} />
+              </div>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '15px', fontWeight: 700, letterSpacing: '-0.01em', color: 'var(--text-primary)' }}>
                 MAINFRAME VSAM & FLAT DATASET INSPECTOR
               </h2>
             </div>
-            <p style={{ color: 'var(--text-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
               {datasets[activeDataset]?.desc}
             </p>
           </div>
 
           {/* Search Box */}
-          <div style={{ position: 'relative', width: '260px' }}>
-            <Search size={13} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
+          <div style={{ position: 'relative', width: '280px' }}>
+            <Search size={14} style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)' }} />
             <input
               className="form-control"
-              placeholder="SEARCH CATALOGED RECORDS..."
+              placeholder="Search cataloged records..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ paddingLeft: '30px', fontSize: '11px', height: '32px' }}
+              style={{ paddingLeft: '34px', fontSize: '12px', height: '36px' }}
             />
           </div>
         </div>
       </div>
 
       {/* Dataset Tabs */}
-      <div style={{ display: 'flex', gap: '6px', marginBottom: '12px', overflowX: 'auto' }}>
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', overflowX: 'auto' }}>
         {Object.entries(datasets).map(([key, ds]) => {
           const isActive = activeDataset === key;
           return (
@@ -105,27 +116,29 @@ export default function DatabaseView({ accounts, transactions, processed, except
                 display: 'flex',
                 alignItems: 'center',
                 gap: '8px',
-                padding: '8px 12px',
+                padding: '9px 14px',
                 borderRadius: 'var(--radius-sm)',
                 cursor: 'pointer',
-                background: isActive ? 'var(--matrix-green-bg)' : 'var(--bg-secondary)',
-                border: isActive ? '1px solid var(--matrix-green-border)' : '1px solid var(--border-subtle)',
-                color: isActive ? 'var(--matrix-green)' : 'var(--text-secondary)',
-                fontWeight: 700,
-                fontSize: '11px',
-                fontFamily: 'var(--font-mono)',
+                background: isActive ? 'var(--brand-navy-pale)' : 'var(--bg-card)',
+                border: isActive ? '1px solid var(--border-default)' : '1px solid var(--border-hairline)',
+                color: isActive ? 'var(--brand-navy-mid)' : 'var(--text-secondary)',
+                fontWeight: isActive ? 700 : 600,
+                fontSize: '12px',
+                fontFamily: 'var(--font-ui)',
                 whiteSpace: 'nowrap',
-                transition: 'all var(--transition-fast)'
+                transition: 'all var(--transition-fast)',
+                boxShadow: isActive ? 'var(--shadow-xs)' : 'none'
               }}
             >
               <span>{ds.label}</span>
               <span style={{
-                fontSize: '9px',
+                fontSize: '10px',
                 fontWeight: 700,
-                padding: '1px 6px',
-                borderRadius: 'var(--radius-sm)',
-                background: isActive ? 'var(--matrix-green-bg)' : 'var(--border-subtle)',
-                color: isActive ? 'var(--matrix-green)' : 'var(--text-muted)'
+                padding: '1px 7px',
+                borderRadius: 'var(--radius-full)',
+                background: isActive ? 'var(--bg-card)' : 'var(--bg-tertiary)',
+                color: isActive ? 'var(--brand-navy-mid)' : 'var(--text-muted)',
+                border: '1px solid var(--border-hairline)'
               }}>
                 {ds.data.length}
               </span>

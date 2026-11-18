@@ -86,66 +86,82 @@ export default function ReconciliationView({ reports }) {
     <div style={{ padding: '0 24px 24px' }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <FileCheck size={16} color="var(--matrix-green)" />
-          <h2 style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            BATCH RECONCILIATION & AUDIT PROOF // PGM=RECONCL
-          </h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: 'var(--radius-sm)',
+            background: 'var(--brand-navy-pale)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--brand-navy-mid)'
+          }}>
+            <FileCheck size={18} />
+          </div>
+          <div>
+            <h2 style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-display)', letterSpacing: '-0.01em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
+              BATCH RECONCILIATION & AUDIT PROOF // PGM=RECONCL
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontFamily: 'var(--font-ui)', marginTop: '2px' }}>
+              Mathematical proof verifying Opening Balance + Credits − Debits = Closing Balance
+            </p>
+          </div>
         </div>
-        <span className="badge badge-success" style={{ fontSize: '10px' }}>
-          {isBalanced ? 'AUDIT PROOF BALANCED (RC=0000)' : 'OUT OF BALANCE (RC=0008)'}
+        <span className="badge badge-success" style={{ fontSize: '11px', padding: '4px 10px' }}>
+          {isBalanced ? '✓ AUDIT PROOF BALANCED (RC=0000)' : '⚠ OUT OF BALANCE (RC=0008)'}
         </span>
       </div>
 
       {/* Summary KPI Matrix */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px', marginBottom: '16px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px', marginBottom: '20px' }}>
         
-        <div className="glass-panel" style={{ padding: '12px 14px', borderRadius: 'var(--radius-sm)' }}>
-          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--brand-teal)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
             TOTAL COMMITTED CREDITS
           </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--matrix-green)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--brand-teal)' }}>
             +{formatCurrency(parsedCredits)}
           </div>
-          <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
             ALL SYSTEM INFLOWS
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '12px 14px', borderRadius: 'var(--radius-sm)' }}>
-          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--brand-navy-light)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
             CLEARED DEBITS (OUTFLOW)
           </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--amber-warning)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--brand-navy-light)' }}>
             -{formatCurrency(parsedDebits)}
           </div>
-          <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
             VERIFIED SUFFICIENT BALANCE
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '12px 14px', borderRadius: 'var(--radius-sm)' }}>
-          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--crimson-danger)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
             SUSPENDED DEBIT REJECTS
           </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: parsedRejected > 0 ? 'var(--crimson-danger)' : 'var(--matrix-green)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: parsedRejected > 0 ? 'var(--crimson-danger)' : 'var(--emerald-success)' }}>
             {formatCurrency(parsedRejected)}
           </div>
-          <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'var(--font-ui)', marginTop: '4px' }}>
             ROUTED TO SUSPENSE QUEUE
           </div>
         </div>
 
-        <div className="glass-panel" style={{ padding: '12px 14px', borderRadius: 'var(--radius-sm)' }}>
-          <div style={{ fontSize: '9px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-mono)', marginBottom: '4px' }}>
+        <div className="glass-panel" style={{ padding: '16px 18px', borderRadius: 'var(--radius-md)', borderLeft: '4px solid var(--brand-navy-mid)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontFamily: 'var(--font-ui)', fontWeight: 600, marginBottom: '6px' }}>
             FINAL RECONCILED SYSTEM BALANCE
           </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '1.25rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>
             {formatCurrency(parsedFinal)}
           </div>
-          <div style={{ fontSize: '9px', color: 'var(--matrix-green)', fontFamily: 'var(--font-mono)', marginTop: '2px' }}>
-            OPENING {formatCurrency(parsedOpening)} + DELTA
+          <div style={{ fontSize: '11px', color: 'var(--brand-teal)', fontFamily: 'var(--font-ui)', fontWeight: 600, marginTop: '4px' }}>
+            OPENING {formatCurrency(parsedOpening)} + NET DELTA
           </div>
         </div>
 

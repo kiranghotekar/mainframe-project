@@ -50,20 +50,36 @@ export default function ExceptionsView({ exceptions, accounts, onFundAndRetry })
     <div style={{ padding: '0 24px 24px' }}>
       
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '8px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <AlertTriangle size={16} color="var(--crimson-danger)" />
-          <h2 style={{ fontSize: '13px', fontWeight: 700, fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-            EXCEPTION SUSPENSE QUEUE // EXCEPT.SUSPENSE.SEQ
-          </h2>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: 'var(--radius-sm)',
+            background: 'var(--crimson-bg)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--crimson-danger)'
+          }}>
+            <AlertTriangle size={18} />
+          </div>
+          <div>
+            <h2 style={{ fontSize: '15px', fontWeight: 700, fontFamily: 'var(--font-display)', letterSpacing: '-0.01em', textTransform: 'uppercase', color: 'var(--text-primary)' }}>
+              EXCEPTION SUSPENSE QUEUE // EXCEPT.SUSPENSE.SEQ
+            </h2>
+            <p style={{ color: 'var(--text-secondary)', fontSize: '12px', fontFamily: 'var(--font-ui)', marginTop: '2px' }}>
+              Transactions rejected due to Non-Sufficient Funds (NSF) or invalid routing
+            </p>
+          </div>
         </div>
-        <span className="badge badge-danger" style={{ fontSize: '10px' }}>
+        <span className="badge badge-danger" style={{ fontSize: '11px', padding: '4px 10px' }}>
           {exceptions.length} SUSPENDED RECORDS
         </span>
       </div>
 
       {/* Exception Items */}
-      <div style={{ display: 'grid', gap: '8px' }}>
+      <div style={{ display: 'grid', gap: '10px' }}>
         {displayedExceptions.map((exc, idx) => {
           const account = accountMap.get(exc.accountId);
           const currentBal = account ? account.balance : 0;
@@ -71,45 +87,45 @@ export default function ExceptionsView({ exceptions, accounts, onFundAndRetry })
 
           return (
             <div key={idx} className="glass-panel animate-fade-in" style={{
-              padding: '14px 18px',
-              borderRadius: 'var(--radius-md)',
-              borderLeft: '3px solid var(--crimson-danger)'
+              padding: '18px 22px',
+              borderRadius: 'var(--radius-lg)',
+              borderLeft: '4px solid var(--crimson-danger)'
             }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '14px' }}>
                 <div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
-                    <XCircle size={14} color="var(--crimson-danger)" />
-                    <span style={{ fontFamily: 'var(--font-mono)', fontWeight: 700, fontSize: '12px', color: 'var(--text-primary)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+                    <XCircle size={16} color="var(--crimson-danger)" />
+                    <span style={{ fontFamily: 'var(--font-ui)', fontWeight: 700, fontSize: '13px', color: 'var(--text-primary)' }}>
                       {exc.reason || 'INSUFFICIENT_FUNDS'}
                     </span>
-                    <span className="badge badge-danger" style={{ fontSize: '9px', padding: '1px 5px' }}>
+                    <span className="badge badge-danger" style={{ fontSize: '10px', padding: '2px 8px' }}>
                       SUSPENDED (RC=0004)
                     </span>
                   </div>
 
-                  <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap', fontSize: '11px', color: 'var(--text-secondary)', fontFamily: 'var(--font-mono)' }}>
+                  <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap', fontSize: '12px', color: 'var(--text-secondary)', fontFamily: 'var(--font-ui)' }}>
                     <div>
-                      <span style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>TARGET ACCOUNT</span>
-                      <div style={{ fontWeight: 700, color: 'var(--text-primary)' }}>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', fontWeight: 600 }}>TARGET ACCOUNT</span>
+                      <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: '2px' }}>
                         ACCT-{exc.accountId} {account ? `(${account.name})` : '[NOT FOUND]'}
                       </div>
                     </div>
                     <div>
-                      <span style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>REQUESTED AMOUNT</span>
-                      <div style={{ fontWeight: 700, color: 'var(--crimson-danger)' }}>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', fontWeight: 600 }}>REQUESTED AMOUNT</span>
+                      <div style={{ fontWeight: 700, color: 'var(--crimson-danger)', marginTop: '2px' }}>
                         {formatCurrency(exc.amount)} [{exc.type}]
                       </div>
                     </div>
                     <div>
-                      <span style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>POSTED BALANCE</span>
-                      <div style={{ fontWeight: 700, color: 'var(--matrix-green)' }}>
+                      <span style={{ color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', fontWeight: 600 }}>POSTED BALANCE</span>
+                      <div style={{ fontWeight: 700, color: 'var(--brand-teal)', marginTop: '2px' }}>
                         {formatCurrency(currentBal)}
                       </div>
                     </div>
                     {deficit > 0 && (
                       <div>
-                        <span style={{ color: 'var(--text-muted)', fontSize: '9px', textTransform: 'uppercase' }}>DEFICIT SPREAD</span>
-                        <div style={{ fontWeight: 700, color: 'var(--amber-warning)' }}>
+                        <span style={{ color: 'var(--text-muted)', fontSize: '10px', textTransform: 'uppercase', fontWeight: 600 }}>DEFICIT SPREAD</span>
+                        <div style={{ fontWeight: 700, color: 'var(--amber-warning)', marginTop: '2px' }}>
                           {formatCurrency(deficit)}
                         </div>
                       </div>
@@ -119,11 +135,11 @@ export default function ExceptionsView({ exceptions, accounts, onFundAndRetry })
 
                 {deficit > 0 && (
                   <button
-                    className="btn btn-mainframe"
-                    style={{ fontSize: '10px', padding: '8px 12px' }}
+                    className="btn btn-primary"
+                    style={{ fontSize: '11px', padding: '10px 16px' }}
                     onClick={() => onFundAndRetry(exc.accountId, deficit)}
                   >
-                    <RefreshCw size={12} />
+                    <RefreshCw size={13} />
                     <span>EMERGENCY FUND & RE-RUN BATCH</span>
                   </button>
                 )}

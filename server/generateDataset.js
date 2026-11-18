@@ -149,3 +149,4 @@ if (process.argv[1] && process.argv[1].endsWith('generateDataset.js')) {
   generateLargeDataset(numTxns, numAccs);
   console.log(`[GENERATOR] Done! Generated ${numTxns} rows successfully.`);
 }
+

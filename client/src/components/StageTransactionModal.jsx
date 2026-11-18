@@ -40,34 +40,34 @@ export default function StageTransactionModal({
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         
         {/* Modal Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '12px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', borderBottom: '1px solid var(--border-subtle)', paddingBottom: '14px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <div style={{
-              width: '32px',
-              height: '32px',
+              width: '36px',
+              height: '36px',
               borderRadius: 'var(--radius-sm)',
-              background: 'var(--matrix-green-bg)',
-              border: '1px solid var(--matrix-green-border)',
+              background: 'var(--brand-navy-pale)',
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              color: 'var(--brand-navy-mid)'
             }}>
-              <PlusCircle size={16} color="var(--matrix-green)" />
+              <PlusCircle size={18} />
             </div>
             <div>
-              <h3 style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-mono)', letterSpacing: '0.04em', textTransform: 'uppercase' }}>
+              <h3 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text-primary)', fontFamily: 'var(--font-display)', letterSpacing: '-0.01em' }}>
                 STAGE BATCH TRANSACTION
               </h3>
-              <p style={{ color: 'var(--text-muted)', fontSize: '10px', fontFamily: 'var(--font-mono)' }}>
-                APPEND RECORD TO data/transactions.dat
+              <p style={{ color: 'var(--text-secondary)', fontSize: '11px', fontFamily: 'var(--font-ui)', marginTop: '2px' }}>
+                Append new transaction to QSAM queue (data/transactions.dat)
               </p>
             </div>
           </div>
           <button 
             onClick={onClose}
-            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '4px' }}
+            style={{ background: 'transparent', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: '6px' }}
           >
-            <X size={16} />
+            <X size={18} />
           </button>
         </div>
 

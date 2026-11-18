@@ -15,7 +15,7 @@ export default function Navigation({ activeTab, onTabChange, badgeCounts }) {
     <nav style={{
       margin: '0 24px 16px 24px',
       display: 'flex',
-      gap: '6px',
+      gap: '8px',
       borderBottom: '1px solid var(--border-subtle)',
       paddingBottom: '10px',
       overflowX: 'auto'
@@ -32,35 +32,36 @@ export default function Navigation({ activeTab, onTabChange, badgeCounts }) {
               display: 'flex',
               alignItems: 'center',
               gap: '8px',
-              padding: '8px 14px',
-              borderRadius: 'var(--radius-md)',
-              background: isActive ? 'var(--matrix-green-bg)' : 'transparent',
-              border: isActive ? '1px solid var(--matrix-green-border)' : '1px solid transparent',
-              color: isActive ? 'var(--matrix-green)' : 'var(--text-secondary)',
-              fontWeight: 700,
-              fontSize: '11px',
-              fontFamily: 'var(--font-mono)',
+              padding: '10px 16px',
+              borderRadius: 'var(--radius-sm)',
+              background: isActive ? 'var(--brand-navy-pale)' : 'transparent',
+              border: isActive ? '1px solid var(--border-default)' : '1px solid transparent',
+              color: isActive ? 'var(--brand-navy-mid)' : 'var(--text-secondary)',
+              fontWeight: isActive ? 700 : 600,
+              fontSize: '12px',
+              fontFamily: 'var(--font-ui)',
               cursor: 'pointer',
               transition: 'all var(--transition-fast)',
               whiteSpace: 'nowrap',
-              letterSpacing: '0.04em'
+              letterSpacing: '-0.01em',
+              boxShadow: isActive ? 'var(--shadow-xs)' : 'none'
             }}
           >
             <Icon 
-              size={14} 
-              color={isActive ? 'var(--matrix-green)' : 'var(--text-muted)'} 
+              size={15} 
+              color={isActive ? 'var(--brand-navy-mid)' : 'var(--text-muted)'} 
             />
             <span>{tab.label}</span>
 
             {tab.count !== undefined && tab.count > 0 && (
               <span style={{
-                background: tab.isDanger ? 'var(--crimson-bg)' : 'rgba(45, 181, 138, 0.15)',
-                color: tab.isDanger ? 'var(--crimson-danger)' : 'var(--matrix-green)',
-                border: tab.isDanger ? '1px solid var(--crimson-border)' : '1px solid var(--matrix-green-border)',
+                background: tab.isDanger ? 'var(--crimson-bg)' : 'var(--bg-tertiary)',
+                color: tab.isDanger ? 'var(--crimson-danger)' : 'var(--brand-navy-mid)',
+                border: tab.isDanger ? '1px solid var(--crimson-border)' : '1px solid var(--border-hairline)',
                 fontSize: '10px',
                 fontWeight: 700,
-                padding: '1px 6px',
-                borderRadius: 'var(--radius-sm)'
+                padding: '2px 8px',
+                borderRadius: 'var(--radius-full)'
               }}>
                 {tab.count}
               </span>
